@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Trade Signals VIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/96/000000/quantum-computing.png">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-atom quantum-icon"></i>
+                <div>
+                    <span class="logo-text">QUANTUM</span>
+                    <span class="logo-subtext">TRADE SIGNALS VIP</span>
+                </div>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="#signals" class="nav-link"><i class="fas fa-chart-line"></i> Live Signals</a>
+                <a href="#performance" class="nav-link"><i class="fas fa-trophy"></i> Performance</a>
+                <a href="#pricing" class="nav-link"><i class="fas fa-crown"></i> VIP Access</a>
+                <a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            </div>
+            
+            <div class="nav-auth">
+                <button id="authButton" class="btn-auth">
+                    <i class="fas fa-user"></i> <span>Sign In</span>
+                </button>
+                <button id="notificationBtn" class="btn-notification" style="display: none;">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationCount">0</span>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content quantum-modal">
+            <span class="close-modal">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <div id="loginForm" class="auth-form active">
+                <h3><i class="fas fa-sign-in-alt"></i> Quantum Login</h3>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="quantum@trader.com">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button id="loginBtn" class="btn-quantum">Access Quantum Signals</button>
+                <div class="auth-footer">
+                    <p>Demo Account: demo@quantum.com / demodemo</p>
+                </div>
+            </div>
+            
+            <div id="signupForm" class="auth-form">
+                <h3><i class="fas fa-user-plus"></i> Quantum Registration</h3>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="trader@quantum.com">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password (min. 8 characters)</label>
+                    <input type="password" id="signupPassword" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" placeholder="QuantumTrader">
+                </div>
+                <div class="form-group">
+                    <label for="signupFullName">Full Name</label>
+                    <input type="text" id="signupFullName" placeholder="John Trader">
+                </div>
+                <button id="signupBtn" class="btn-quantum">Join Quantum VIP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Panel -->
+    <div id="notificationPanel" class="notification-panel">
+        <div class="notification-header">
+            <h3><i class="fas fa-bell"></i> Quantum Alerts</h3>
+            <button id="markAllRead" class="btn-small">Mark All Read</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="quantum-glow">QUANTUM TRADE SIGNALS</h1>
+                <h2>AI-Powered Trading Intelligence</h2>
+                <p class="hero-description">
+                    Real-time binary options signals powered by quantum-inspired algorithms. 
+                    Join our VIP community for institutional-grade trading signals.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="totalSignals">0</span>
+                        <span class="stat-label">Signals Today</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="successRate">0%</span>
+                        <span class="stat-label">Success Rate</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="activeUsers">0</span>
+                        <span class="stat-label">Active Traders</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <button id="getStartedBtn" class="btn-quantum-large">
+                        <i class="fas fa-rocket"></i> GET QUANTUM ACCESS
+                    </button>
+                    <button id="watchDemoBtn" class="btn-outline">
+                        <i class="fas fa-play-circle"></i> WATCH DEMO
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="quantum-sphere"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Live Signals Section -->
+    <section id="signals" class="signals-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-bolt"></i> LIVE QUANTUM SIGNALS</h2>
+                <p class="section-subtitle">Real-time trading opportunities from Pocket Option</p>
+            </div>
+            
+            <div class="signals-controls">
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">All Signals</button>
+                    <button class="filter-btn" data-filter="active">Active</button>
+                    <button class="filter-btn" data-filter="call">CALL</button>
+                    <button class="filter-btn" data-filter="put">PUT</button>
+                    <button class="filter-btn" data-filter="hit">HIT</button>
+                </div>
+                <div class="sort-options">
+                    <select id="sortSelect" class="quantum-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="confidence">High Confidence</option>
+                        <option value="likes">Most Liked</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="signals-grid" id="signalsGrid">
+                <!-- Signals will be loaded here -->
+                <div class="loading-signals">
+                    <div class="quantum-loader"></div>
+                    <p>Loading Quantum Signals...</p>
+                </div>
+            </div>
+            
+            <div class="create-signal-btn" id="createSignalBtn" style="display: none;">
+                <button class="btn-quantum">
+                    <i class="fas fa-plus"></i> POST NEW SIGNAL
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Section -->
+    <section id="performance" class="performance-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-bar"></i> QUANTUM PERFORMANCE</h2>
+                <p class="section-subtitle">Real verified results from our trading algorithms</p>
+            </div>
+            
+            <div class="performance-grid">
+                <div class="performance-card">
+                    <div class="performance-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>84.7%</h3>
+                    <p>Overall Accuracy</p>
+                    <div class="performance-trend up">
+                        <i class="fas fa-arrow-up"></i> 2.3% this week
+                    </div>
+                </div>
+                
+                <div class="performance-card">
+                    <div class="performance-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>127</h3>
+                    <p>Signals This Month</p>
+                    <div class="performance-trend up">
+                        <i class="fas fa-arrow-up"></i> 18% increase
+                    </div>
+                </div>
+                
+                <div class="performance-card">
+                    <div class="performance-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>2,843</h3>
+                    <p>VIP Members</p>
+                    <div class="performance-trend up">
+                        <i class="fas fa-arrow-up"></i> 247 new members
+                    </div>
+                </div>
+                
+                <div class="performance-card">
+                    <div class="performance-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>4.9/5.0</h3>
+                    <p>Member Satisfaction</p>
+                    <div class="performance-trend up">
+                        <i class="fas fa-arrow-up"></i> 98% positive
+                    </div>
+                </div>
+            </div>
+            
+            <div class="performance-chart">
+                <h3><i class="fas fa-chart-line"></i> Weekly Performance</h3>
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-crown"></i> QUANTUM VIP ACCESS</h2>
+                <p class="section-subtitle">Choose your quantum trading tier</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>FREE</h3>
+                        <div class="price">$0<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 3 Daily Signals</li>
+                        <li><i class="fas fa-check"></i> Basic Performance Stats</li>
+                        <li><i class="fas fa-check"></i> Community Access</li>
+                        <li><i class="fas fa-times"></i> <del>Real-time Alerts</del></li>
+                        <li><i class="fas fa-times"></i> <del>VIP Signals</del></li>
+                        <li><i class="fas fa-times"></i> <del>Advanced Analytics</del></li>
+                    </ul>
+                    <button class="btn-pricing">Current Plan</button>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">MOST POPULAR</div>
+                    <div class="pricing-header">
+                        <h3>VIP</h3>
+                        <div class="price">$97<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> All Daily Signals</li>
+                        <li><i class="fas fa-check"></i> Real-time Mobile Alerts</li>
+                        <li><i class="fas fa-check"></i> Advanced Analytics</li>
+                        <li><i class="fas fa-check"></i> VIP Only Signals</li>
+                        <li><i class="fas fa-check"></i> Risk Management Tools</li>
+                        <li><i class="fas fa-check"></i> Priority Support</li>
+                    </ul>
+                    <button class="btn-pricing btn-quantum">UPGRADE TO VIP</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>PRO</h3>
+                        <div class="price">$297<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Everything in VIP</li>
+                        <li><i class="fas fa-check"></i> 1-on-1 Coaching</li>
+                        <li><i class="fas fa-check"></i> Custom Signal Filters</li>
+                        <li><i class="fas fa-check"></i> API Access</li>
+                        <li><i class="fas fa-check"></i> Early Beta Features</li>
+                        <li><i class="fas fa-check"></i> Dedicated Account Manager</li>
+                    </ul>
+                    <button class="btn-pricing">GO PRO</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-atom quantum-icon"></i>
+                        <div>
+                            <span class="logo-text">QUANTUM</span>
+                            <span class="logo-subtext">TRADE SIGNALS VIP</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Institutional-grade trading signals powered by quantum computing principles.
+                        Join thousands of successful traders worldwide.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>TRADING</h4>
+                    <ul class="footer-links">
+                        <li><a href="#signals">Live Signals</a></li>
+                        <li><a href="#performance">Performance</a></li>
+                        <li><a href="#pricing">VIP Pricing</a></li>
+                        <li><a href="#">Trading Guide</a></li>
+                        <li><a href="#">Risk Management</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>LEGAL</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Risk Disclaimer</a></li>
+                        <li><a href="#">Refund Policy</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>CONTACT</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-envelope"></i> support@quantumsignals.com</li>
+                        <li><i class="fas fa-headset"></i> 24/7 VIP Support</li>
+                        <li><i class="fas fa-globe"></i> quantum-trade-signals.com</li>
+                    </ul>
+                    <div class="footer-newsletter">
+                        <h5>Quantum Insights</h5>
+                        <p>Get free weekly trading insights</p>
+                        <div class="newsletter-form">
+                            <input type="email" placeholder="Your Email">
+                            <button class="btn-small">SUBSCRIBE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Quantum Trade Signals VIP. All rights reserved. Trading involves risk.</p>
+                <p>This is a real trading signals platform. Past performance does not guarantee future results.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Signal Creation Modal -->
+    <div id="signalModal" class="modal">
+        <div class="modal-content quantum-modal">
+            <span class="close-modal">&times;</span>
+            <h3><i class="fas fa-plus-circle"></i> Create New Signal</h3>
+            <form id="signalForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assetName">Asset Name *</label>
+                        <input type="text" id="assetName" required placeholder="EUR/USD, BTC, Gold, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="action">Action *</label>
+                        <select id="action" required>
+                            <option value="">Select Action</option>
+                            <option value="CALL">CALL (Buy/Long)</option>
+                            <option value="PUT">PUT (Sell/Short)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiryTime">Expiry Time (Minutes) *</label>
+                        <input type="number" id="expiryTime" required min="1" max="60" placeholder="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="confidenceLevel">Confidence Level *</label>
+                        <select id="confidenceLevel" required>
+                            <option value="1">★ Low (1/5)</option>
+                            <option value="2">★★ Medium-Low (2/5)</option>
+                            <option value="3">★★★ Medium (3/5)</option>
+                            <option value="4">★★★★ High (4/5)</option>
+                            <option value="5">★★★★★ Very High (5/5)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="entryPrice">Entry Price</label>
+                        <input type="number" step="0.00001" id="entryPrice" placeholder="Current market price">
+                    </div>
+                    <div class="form-group">
+                        <label for="targetPrice">Target Price</label>
+                        <input type="number" step="0.00001" id="targetPrice" placeholder="Take profit level">
+                    </div>
+                    <div class="form-group">
+                        <label for="stopLoss">Stop Loss</label>
+                        <input type="number" step="0.00001" id="stopLoss" placeholder="Stop loss level">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signalNotes">Additional Notes</label>
+                    <textarea id="signalNotes" rows="3" placeholder="Market analysis, timing, risk factors..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn-quantum">
+                    <i class="fas fa-paper-plane"></i> PUBLISH SIGNAL
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="auth.js"></script>
+    <script src="signals.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
