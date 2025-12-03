@@ -3,11 +3,1631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Trade Signals VIP</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Quantum Trade Signals VIP | Institutional Trading Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/96/000000/quantum-computing.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ====== VARIABLES ====== */
+        :root {
+            --quantum-primary: #0c0c1d;
+            --quantum-secondary: #1a1a3d;
+            --quantum-accent: #00d4ff;
+            --quantum-accent-dark: #0088cc;
+            --quantum-purple: #8a2be2;
+            --quantum-neon: #00ff9d;
+            --quantum-danger: #ff2d75;
+            --quantum-success: #00ff88;
+            --quantum-warning: #ffaa00;
+            --quantum-text: #ffffff;
+            --quantum-text-secondary: #b0b0d0;
+            --quantum-border: #2a2a5a;
+            --quantum-card-bg: rgba(16, 16, 48, 0.9);
+            --quantum-glass: rgba(20, 20, 60, 0.7);
+            --quantum-glow: 0 0 20px var(--quantum-accent);
+            --quantum-glow-purple: 0 0 20px var(--quantum-purple);
+            
+            /* Trading Colors */
+            --trading-green: #00ff88;
+            --trading-red: #ff2d75;
+            --trading-yellow: #ffaa00;
+            --trading-blue: #00d4ff;
+            --trading-purple: #8a2be2;
+            --trading-orange: #ff6b35;
+            
+            /* Status Colors */
+            --status-up: var(--trading-green);
+            --status-down: var(--trading-red);
+            --status-neutral: var(--trading-yellow);
+        }
+
+        /* ====== RESET & BASE STYLES ====== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--quantum-primary) 0%, #1a1035 100%);
+            color: var(--quantum-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        h1, h2, h3, h4, .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        h1 { font-size: 3.5rem; }
+        h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+        h3 { font-size: 1.8rem; margin-bottom: 1rem; }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section { padding: 6rem 0; }
+
+        /* ====== NAVIGATION ====== */
+        .navbar {
+            background: var(--quantum-glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--quantum-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .quantum-icon {
+            font-size: 2rem;
+            color: var(--quantum-accent);
+            animation: quantum-spin 10s linear infinite;
+        }
+
+        @keyframes quantum-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--quantum-accent);
+            display: block;
+        }
+
+        .logo-subtext {
+            font-size: 0.7rem;
+            color: var(--quantum-text-secondary);
+            letter-spacing: 2px;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--quantum-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--quantum-accent);
+        }
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-toggle .fa-chevron-down {
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 220px;
+            background: var(--quantum-card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--quantum-border);
+            border-radius: 10px;
+            padding: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-dropdown:hover .dropdown-toggle .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--quantum-text-secondary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--quantum-accent);
+            transform: translateX(5px);
+        }
+
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .live-stats {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid var(--quantum-border);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--quantum-text-secondary);
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .stat-value.up { color: var(--trading-green); }
+        .stat-value.down { color: var(--trading-red); }
+
+        .btn-notification {
+            background: var(--quantum-secondary);
+            color: var(--quantum-text);
+            border: 1px solid var(--quantum-border);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .btn-notification:hover {
+            background: var(--quantum-accent);
+            color: var(--quantum-primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--quantum-danger);
+            color: white;
+            font-size: 0.7rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-auth {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--quantum-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ====== HERO SECTION ====== */
+        .hero {
+            padding: 12rem 2rem 6rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge-text {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .badge-live {
+            background: var(--quantum-danger);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-live .fa-circle {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-text h1 {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text h2 {
+            font-size: 1.5rem;
+            color: var(--quantum-accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            color: var(--quantum-text-secondary);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .stat-card {
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--quantum-accent);
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--quantum-accent), var(--quantum-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--quantum-neon);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--quantum-text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .hero-cta {
+            margin: 2rem 0;
+        }
+
+        .btn-quantum-large {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            color: white;
+            border: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .btn-quantum-large:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .cta-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--quantum-accent);
+            border: 2px solid var(--quantum-accent);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: var(--quantum-accent);
+            color: var(--quantum-primary);
+        }
+
+        .trusted-by {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--quantum-border);
+        }
+
+        .trusted-label {
+            display: block;
+            color: var(--quantum-text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .trusted-logos {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .trusted-logo {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--quantum-text-secondary);
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .trading-terminal {
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .terminal-header {
+            background: var(--quantum-secondary);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--quantum-border);
+        }
+
+        .terminal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            color: var(--quantum-accent);
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .terminal-btn {
+            background: transparent;
+            border: 1px solid var(--quantum-border);
+            color: var(--quantum-text-secondary);
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .terminal-btn:hover {
+            border-color: var(--quantum-accent);
+            color: var(--quantum-accent);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+        }
+
+        .market-watch {
+            margin-bottom: 1.5rem;
+        }
+
+        .market-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--quantum-border);
+            color: var(--quantum-text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .market-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(42, 42, 90, 0.3);
+        }
+
+        .market-row:last-child {
+            border-bottom: none;
+        }
+
+        .market-row.up .change { color: var(--trading-green); }
+        .market-row.down .change { color: var(--trading-red); }
+
+        .chart-container {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: var(--quantum-text-secondary);
+        }
+
+        .chart-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--quantum-accent);
+        }
+
+        /* ====== SIGNALS SECTION ====== */
+        .signals-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--quantum-border);
+            border-bottom: 1px solid var(--quantum-border);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title h2 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--quantum-text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .section-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .signal-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--quantum-secondary);
+            color: var(--quantum-text);
+            border: 1px solid var(--quantum-border);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            border-color: transparent;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: var(--quantum-card-bg);
+            border-color: var(--quantum-accent);
+        }
+
+        .signal-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: var(--quantum-secondary);
+            color: var(--quantum-text);
+            border: 1px solid var(--quantum-border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            border-color: var(--quantum-accent);
+            color: var(--quantum-accent);
+        }
+
+        .signal-stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .signal-stat {
+            text-align: center;
+        }
+
+        .signal-stat .stat-label {
+            display: block;
+            color: var(--quantum-text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .signal-stat .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .signal-stat .stat-value.up { color: var(--trading-green); }
+        .signal-stat .stat-value.down { color: var(--trading-red); }
+        .signal-stat .stat-value.neutral { color: var(--trading-yellow); }
+
+        .signals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .signal-card {
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+        }
+
+        .signal-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--quantum-accent);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .signal-asset {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--quantum-accent);
+        }
+
+        .signal-action {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .action-call {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--quantum-success);
+            border: 1px solid var(--quantum-success);
+        }
+
+        .action-put {
+            background: rgba(255, 45, 117, 0.1);
+            color: var(--quantum-danger);
+            border: 1px solid var(--quantum-danger);
+        }
+
+        .signal-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--quantum-text-secondary);
+        }
+
+        .signal-details {
+            margin: 1.5rem 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--quantum-border);
+        }
+
+        .detail-label {
+            color: var(--quantum-text-secondary);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .confidence-stars {
+            color: var(--quantum-warning);
+            font-size: 1.2rem;
+        }
+
+        .signal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--quantum-border);
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            color: var(--quantum-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .like-btn:hover {
+            color: var(--quantum-danger);
+        }
+
+        .like-btn.liked {
+            color: var(--quantum-danger);
+        }
+
+        .like-count {
+            font-size: 0.9rem;
+            color: var(--quantum-text-secondary);
+        }
+
+        .signal-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--quantum-success);
+        }
+
+        .status-hit {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--quantum-accent);
+        }
+
+        .status-miss {
+            background: rgba(255, 45, 117, 0.1);
+            color: var(--quantum-danger);
+        }
+
+        .status-expired {
+            background: rgba(170, 170, 170, 0.1);
+            color: #aaa;
+        }
+
+        .create-signal-btn {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .btn-quantum {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .btn-quantum:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--quantum-glow);
+        }
+
+        /* ====== TRADING TOOLS SECTION ====== */
+        .tools-section {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tool-card {
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--quantum-accent);
+        }
+
+        .tool-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--quantum-accent), var(--quantum-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .tool-card h3 {
+            margin-bottom: 1rem;
+            color: var(--quantum-text);
+        }
+
+        .tool-card p {
+            color: var(--quantum-text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-tool {
+            background: transparent;
+            color: var(--quantum-accent);
+            border: 2px solid var(--quantum-accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-tool:hover {
+            background: var(--quantum-accent);
+            color: var(--quantum-primary);
+        }
+
+        /* ====== MARKET ANALYSIS SECTION ====== */
+        .analysis-section {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .analysis-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .market-overview, .technical-analysis {
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .overview-card {
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .overview-card.bullish {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .overview-card.bearish {
+            background: rgba(255, 45, 117, 0.1);
+            border: 1px solid rgba(255, 45, 117, 0.3);
+        }
+
+        .overview-card h4 {
+            margin-bottom: 1rem;
+            color: var(--quantum-text);
+        }
+
+        .overview-card ul {
+            list-style: none;
+        }
+
+        .overview-card li {
+            padding: 0.5rem 0;
+            color: var(--quantum-text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .overview-card li:last-child {
+            border-bottom: none;
+        }
+
+        .analysis-chart {
+            height: 300px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ====== ECONOMIC CALENDAR SECTION ====== */
+        .calendar-section {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .calendar-table {
+            width: 100%;
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .calendar-table th {
+            background: var(--quantum-secondary);
+            padding: 1rem;
+            text-align: left;
+            color: var(--quantum-text);
+            font-weight: 600;
+        }
+
+        .calendar-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--quantum-border);
+            color: var(--quantum-text-secondary);
+        }
+
+        .calendar-table tr:hover {
+            background: var(--quantum-secondary);
+        }
+
+        /* ====== MODALS ====== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: modal-appear 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modal-appear {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: var(--quantum-text-secondary);
+            cursor: pointer;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .close-modal:hover {
+            color: var(--quantum-accent);
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--quantum-border);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            color: var(--quantum-text-secondary);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: var(--quantum-accent);
+            border-bottom: 2px solid var(--quantum-accent);
+        }
+
+        .auth-form {
+            padding: 2rem;
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--quantum-text-secondary);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: var(--quantum-secondary);
+            border: 1px solid var(--quantum-border);
+            color: var(--quantum-text);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--quantum-accent);
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        /* ====== NOTIFICATIONS PANEL ====== */
+        .notification-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 350px;
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            display: none;
+            animation: slide-in 0.3s ease-out;
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .notification-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--quantum-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .notification-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--quantum-border);
+            padding: 0 1.5rem;
+        }
+
+        .notification-tab {
+            padding: 0.75rem 1rem;
+            background: none;
+            border: none;
+            color: var(--quantum-text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .notification-tab.active {
+            color: var(--quantum-accent);
+            border-bottom-color: var(--quantum-accent);
+        }
+
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--quantum-border);
+            transition: background 0.3s;
+        }
+
+        .notification-item:hover {
+            background: var(--quantum-secondary);
+        }
+
+        .notification-item.unread {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid var(--quantum-accent);
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--quantum-text);
+        }
+
+        .notification-message {
+            color: var(--quantum-text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--quantum-text-secondary);
+        }
+
+        /* ====== FOOTER ====== */
+        .footer {
+            background: var(--quantum-secondary);
+            border-top: 1px solid var(--quantum-border);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-description {
+            margin-bottom: 1.5rem;
+            color: var(--quantum-text-secondary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--quantum-card-bg);
+            color: var(--quantum-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background: var(--quantum-accent);
+            color: var(--quantum-primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-col h4 {
+            color: var(--quantum-accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--quantum-text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--quantum-accent);
+        }
+
+        .footer-contact li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: var(--quantum-text-secondary);
+        }
+
+        .footer-newsletter {
+            margin-top: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            background: var(--quantum-card-bg);
+            border: 1px solid var(--quantum-border);
+            color: var(--quantum-text);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        .btn-small {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--quantum-glow);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--quantum-border);
+            color: var(--quantum-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ====== UTILITY CLASSES ====== */
+        .active-section {
+            display: block !important;
+        }
+
+        .hidden-section {
+            display: none !important;
+        }
+
+        .loading-signals {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .quantum-loader {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 2rem;
+            border: 3px solid var(--quantum-border);
+            border-top-color: var(--quantum-accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ====== RESPONSIVE DESIGN ====== */
+        @media (max-width: 1200px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--quantum-glass);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 1rem;
+                border-top: 1px solid var(--quantum-border);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-dropdown .dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                padding-left: 1rem;
+            }
+            
+            .hero {
+                padding: 10rem 1rem 4rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .signals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .notification-panel {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .signal-stats-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ====== TOAST NOTIFICATIONS ====== */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 3000;
+            animation: toast-slide 0.3s ease-out;
+            max-width: 350px;
+        }
+
+        @keyframes toast-slide {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            background: linear-gradient(90deg, var(--quantum-success), #00cc77);
+        }
+
+        .toast.error {
+            background: linear-gradient(90deg, var(--quantum-danger), #ff0055);
+        }
+
+        .toast.info {
+            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -22,20 +1642,104 @@
             </div>
             
             <div class="nav-links" id="navLinks">
-                <a href="#signals" class="nav-link"><i class="fas fa-chart-line"></i> Live Signals</a>
-                <a href="#performance" class="nav-link"><i class="fas fa-trophy"></i> Performance</a>
-                <a href="#pricing" class="nav-link"><i class="fas fa-crown"></i> VIP Access</a>
-                <a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+                <a href="#hero" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+                
+                <!-- Trading Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#signals" class="nav-link dropdown-toggle">
+                        <i class="fas fa-chart-line"></i> Trading <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#signals" class="dropdown-item"><i class="fas fa-bolt"></i> Live Signals</a>
+                        <a href="#trading-tools" class="dropdown-item"><i class="fas fa-tools"></i> Trading Tools</a>
+                        <a href="#market-analysis" class="dropdown-item"><i class="fas fa-chart-bar"></i> Market Analysis</a>
+                        <a href="#economic-calendar" class="dropdown-item"><i class="fas fa-calendar-alt"></i> Economic Calendar</a>
+                        <a href="#signals-history" class="dropdown-item"><i class="fas fa-history"></i> Signals History</a>
+                        <a href="#risk-management" class="dropdown-item"><i class="fas fa-shield-alt"></i> Risk Management</a>
+                    </div>
+                </div>
+                
+                <!-- Education Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#education" class="nav-link dropdown-toggle">
+                        <i class="fas fa-graduation-cap"></i> Education <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#trading-academy" class="dropdown-item"><i class="fas fa-university"></i> Trading Academy</a>
+                        <a href="#webinars" class="dropdown-item"><i class="fas fa-video"></i> Live Webinars</a>
+                        <a href="#trading-strategies" class="dropdown-item"><i class="fas fa-chess-board"></i> Strategies</a>
+                        <a href="#psychology" class="dropdown-item"><i class="fas fa-brain"></i> Trading Psychology</a>
+                        <a href="#glossary" class="dropdown-item"><i class="fas fa-book"></i> Trading Glossary</a>
+                    </div>
+                </div>
+                
+                <!-- Community Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#community" class="nav-link dropdown-toggle">
+                        <i class="fas fa-users"></i> Community <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#trade-ideas" class="dropdown-item"><i class="fas fa-lightbulb"></i> Trade Ideas</a>
+                        <a href="#leaderboard" class="dropdown-item"><i class="fas fa-trophy"></i> Leaderboard</a>
+                        <a href="#discussion" class="dropdown-item"><i class="fas fa-comments"></i> Discussion</a>
+                        <a href="#copytrading" class="dropdown-item"><i class="fas fa-user-friends"></i> Copy Trading</a>
+                        <a href="#mentorship" class="dropdown-item"><i class="fas fa-hands-helping"></i> Mentorship</a>
+                    </div>
+                </div>
+                
+                <!-- VIP Access Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#vip" class="nav-link dropdown-toggle">
+                        <i class="fas fa-crown"></i> VIP <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#pricing" class="dropdown-item"><i class="fas fa-tags"></i> Pricing</a>
+                        <a href="#vip-benefits" class="dropdown-item"><i class="fas fa-star"></i> Benefits</a>
+                        <a href="#vip-signals" class="dropdown-item"><i class="fas fa-gem"></i> VIP Only Signals</a>
+                        <a href="#personal-coaching" class="dropdown-item"><i class="fas fa-user-tie"></i> Personal Coaching</a>
+                        <a href="#api-access" class="dropdown-item"><i class="fas fa-code"></i> API Access</a>
+                    </div>
+                </div>
+                
+                <!-- Resources Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#resources" class="nav-link dropdown-toggle">
+                        <i class="fas fa-box-open"></i> Resources <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#trading-platforms" class="dropdown-item"><i class="fas fa-desktop"></i> Trading Platforms</a>
+                        <a href="#brokers" class="dropdown-item"><i class="fas fa-handshake"></i> Recommended Brokers</a>
+                        <a href="#tools" class="dropdown-item"><i class="fas fa-wrench"></i> Trading Tools</a>
+                        <a href="#apps" class="dropdown-item"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+                        <a href="#api-docs" class="dropdown-item"><i class="fas fa-file-code"></i> API Documentation</a>
+                    </div>
+                </div>
+                
+                <a href="#support" class="nav-link"><i class="fas fa-headset"></i> Support</a>
             </div>
             
             <div class="nav-auth">
-                <button id="authButton" class="btn-auth">
-                    <i class="fas fa-user"></i> <span>Sign In</span>
-                </button>
+                <!-- Live Trading Stats -->
+                <div class="live-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">BTC/USD</span>
+                        <span class="stat-value up">$45,283.12</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">EUR/USD</span>
+                        <span class="stat-value down">1.0845</span>
+                    </div>
+                </div>
+                
                 <button id="notificationBtn" class="btn-notification" style="display: none;">
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge" id="notificationCount">0</span>
                 </button>
+                
+                <button id="authButton" class="btn-auth">
+                    <i class="fas fa-user"></i> <span>Sign In</span>
+                </button>
+                
                 <button class="menu-toggle" id="menuToggle">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -45,11 +1749,12 @@
 
     <!-- Auth Modal -->
     <div id="authModal" class="modal">
-        <div class="modal-content quantum-modal">
+        <div class="modal-content">
             <span class="close-modal">&times;</span>
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login">Login</button>
                 <button class="auth-tab" data-tab="signup">Sign Up</button>
+                <button class="auth-tab" data-tab="demo">Demo Account</button>
             </div>
             
             <div id="loginForm" class="auth-form active">
@@ -62,31 +1767,65 @@
                     <label for="loginPassword">Password</label>
                     <input type="password" id="loginPassword" placeholder="••••••••">
                 </div>
-                <button id="loginBtn" class="btn-quantum">Access Quantum Signals</button>
-                <div class="auth-footer">
-                    <p>Demo Account: demo@quantum.com / demodemo</p>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="rememberMe"> Remember me
+                    </label>
                 </div>
+                <button id="loginBtn" class="btn-quantum">Access Quantum Signals</button>
             </div>
             
             <div id="signupForm" class="auth-form">
                 <h3><i class="fas fa-user-plus"></i> Quantum Registration</h3>
                 <div class="form-group">
-                    <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" placeholder="trader@quantum.com">
+                    <label for="signupEmail">Email *</label>
+                    <input type="email" id="signupEmail" placeholder="trader@quantum.com" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupPassword">Password *</label>
+                        <input type="password" id="signupPassword" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupUsername">Username *</label>
+                        <input type="text" id="signupUsername" placeholder="QuantumTrader" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tradingExperience">Trading Experience</label>
+                        <select id="tradingExperience">
+                            <option value="">Select Experience Level</option>
+                            <option value="beginner">Beginner (0-1 years)</option>
+                            <option value="intermediate">Intermediate (1-3 years)</option>
+                            <option value="advanced">Advanced (3+ years)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="signupPassword">Password (min. 8 characters)</label>
-                    <input type="password" id="signupPassword" placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label for="signupUsername">Username</label>
-                    <input type="text" id="signupUsername" placeholder="QuantumTrader">
-                </div>
-                <div class="form-group">
-                    <label for="signupFullName">Full Name</label>
-                    <input type="text" id="signupFullName" placeholder="John Trader">
+                    <label>
+                        <input type="checkbox" id="terms" required> I agree to Terms & Conditions
+                    </label>
                 </div>
                 <button id="signupBtn" class="btn-quantum">Join Quantum VIP</button>
+            </div>
+            
+            <div id="demoForm" class="auth-form">
+                <h3><i class="fas fa-play-circle"></i> Demo Account</h3>
+                <p style="color: var(--quantum-text-secondary); margin-bottom: 1.5rem;">
+                    Try our platform with $10,000 virtual money. Practice trading with real-time signals without any risk.
+                </p>
+                <div class="form-group">
+                    <label for="demoEmail">Email</label>
+                    <input type="email" id="demoEmail" placeholder="demo@quantum.com">
+                </div>
+                <button id="startDemoBtn" class="btn-quantum">
+                    <i class="fas fa-play"></i> Start Free Demo
+                </button>
             </div>
         </div>
     </div>
@@ -97,213 +1836,863 @@
             <h3><i class="fas fa-bell"></i> Quantum Alerts</h3>
             <button id="markAllRead" class="btn-small">Mark All Read</button>
         </div>
+        <div class="notification-tabs">
+            <button class="notification-tab active" data-tab="all">All</button>
+            <button class="notification-tab" data-tab="signals">Signals</button>
+            <button class="notification-tab" data-tab="system">System</button>
+        </div>
         <div class="notification-list" id="notificationList">
-            <!-- Notifications will be loaded here -->
+            <div class="notification-item unread">
+                <div class="notification-title">New Signal Generated</div>
+                <div class="notification-message">EUR/USD CALL signal with 85% confidence</div>
+                <div class="notification-time">2 minutes ago</div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-title">Market Alert</div>
+                <div class="notification-message">Volatility expected during US market open</div>
+                <div class="notification-time">1 hour ago</div>
+            </div>
         </div>
     </div>
 
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="quantum-glow">QUANTUM TRADE SIGNALS</h1>
-                <h2>AI-Powered Trading Intelligence</h2>
-                <p class="hero-description">
-                    Real-time binary options signals powered by quantum-inspired algorithms. 
-                    Join our VIP community for institutional-grade trading signals.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-number" id="totalSignals">0</span>
-                        <span class="stat-label">Signals Today</span>
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- Hero Section (Visible by Default) -->
+        <section id="hero" class="hero active-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-badge">
+                        <span class="badge-text">PROFESSIONAL TRADING</span>
+                        <span class="badge-live"><i class="fas fa-circle"></i> LIVE</span>
                     </div>
-                    <div class="stat">
-                        <span class="stat-number" id="successRate">0%</span>
-                        <span class="stat-label">Success Rate</span>
+                    <h1 class="quantum-glow">QUANTUM TRADE SIGNALS</h1>
+                    <h2>AI-Powered Institutional Trading Intelligence</h2>
+                    <p class="hero-description">
+                        Join the world's most advanced trading signals platform. 
+                        Real-time binary options, forex, and crypto signals powered by 
+                        quantum computing algorithms and institutional-grade analysis.
+                    </p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalSignals">24</div>
+                                <div class="stat-label">Signals Today</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="successRate">84.7%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="activeUsers">2,843</div>
+                                <div class="stat-label">Active Traders</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="profitFactor">2.8x</div>
+                                <div class="stat-label">Profit Factor</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <span class="stat-number" id="activeUsers">0</span>
-                        <span class="stat-label">Active Traders</span>
+                    
+                    <div class="hero-cta">
+                        <button id="getStartedBtn" class="btn-quantum-large">
+                            <i class="fas fa-rocket"></i> START TRADING NOW
+                        </button>
+                        <div class="cta-options">
+                            <button id="watchDemoBtn" class="btn-outline">
+                                <i class="fas fa-play-circle"></i> FREE DEMO
+                            </button>
+                            <button id="watchVideoBtn" class="btn-outline">
+                                <i class="fas fa-video"></i> WATCH VIDEO
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="trusted-by">
+                        <span class="trusted-label">Trusted by traders at:</span>
+                        <div class="trusted-logos">
+                            <div class="trusted-logo">Pocket Option</div>
+                            <div class="trusted-logo">IQ Option</div>
+                            <div class="trusted-logo">Olymp Trade</div>
+                            <div class="trusted-logo">Binance</div>
+                        </div>
                     </div>
                 </div>
-                <div class="hero-buttons">
-                    <button id="getStartedBtn" class="btn-quantum-large">
-                        <i class="fas fa-rocket"></i> GET QUANTUM ACCESS
+                
+                <div class="hero-visual">
+                    <div class="trading-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-title">Live Trading Terminal</div>
+                            <div class="terminal-controls">
+                                <button class="terminal-btn"><i class="fas fa-expand"></i></button>
+                                <button class="terminal-btn"><i class="fas fa-cog"></i></button>
+                            </div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="market-watch">
+                                <div class="market-header">
+                                    <span>Symbol</span>
+                                    <span>Bid</span>
+                                    <span>Ask</span>
+                                    <span>Change</span>
+                                </div>
+                                <div class="market-row up">
+                                    <span class="symbol">BTC/USD</span>
+                                    <span class="bid">$45,283.12</span>
+                                    <span class="ask">$45,285.45</span>
+                                    <span class="change">+2.34%</span>
+                                </div>
+                                <div class="market-row down">
+                                    <span class="symbol">EUR/USD</span>
+                                    <span class="bid">1.0845</span>
+                                    <span class="ask">1.0847</span>
+                                    <span class="change">-0.12%</span>
+                                </div>
+                                <div class="market-row up">
+                                    <span class="symbol">XAU/USD</span>
+                                    <span class="bid">$2,034.56</span>
+                                    <span class="ask">$2,035.12</span>
+                                    <span class="change">+0.45%</span>
+                                </div>
+                                <div class="market-row up">
+                                    <span class="symbol">GBP/USD</span>
+                                    <span class="bid">1.2678</span>
+                                    <span class="ask">1.2680</span>
+                                    <span class="change">+0.18%</span>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <div class="chart-placeholder">
+                                    <i class="fas fa-chart-line"></i>
+                                    <p>Live Trading Chart</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Signals Section (Visible by Default) -->
+        <section id="signals" class="signals-section active-section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-title">
+                        <h2><i class="fas fa-bolt"></i> LIVE TRADING SIGNALS</h2>
+                        <p class="section-subtitle">Real-time binary options & forex signals from our quantum algorithms</p>
+                    </div>
+                    <div class="section-controls">
+                        <div class="signal-filters">
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-layer-group"></i> All
+                            </button>
+                            <button class="filter-btn" data-filter="forex">
+                                <i class="fas fa-money-bill-wave"></i> Forex
+                            </button>
+                            <button class="filter-btn" data-filter="crypto">
+                                <i class="fab fa-bitcoin"></i> Crypto
+                            </button>
+                            <button class="filter-btn" data-filter="commodities">
+                                <i class="fas fa-gem"></i> Commodities
+                            </button>
+                        </div>
+                        <div class="signal-actions">
+                            <button class="action-btn" id="refreshSignals">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Signal Stats -->
+                <div class="signal-stats-bar">
+                    <div class="signal-stat">
+                        <span class="stat-label">Active Signals</span>
+                        <span class="stat-value" id="activeSignals">12</span>
+                    </div>
+                    <div class="signal-stat">
+                        <span class="stat-label">Today's Win Rate</span>
+                        <span class="stat-value up">84.7%</span>
+                    </div>
+                    <div class="signal-stat">
+                        <span class="stat-label">Avg. Return</span>
+                        <span class="stat-value up">78%</span>
+                    </div>
+                    <div class="signal-stat">
+                        <span class="stat-label">Risk Level</span>
+                        <span class="stat-value neutral">Medium</span>
+                    </div>
+                </div>
+                
+                <!-- Signals Grid -->
+                <div class="signals-grid" id="signalsGrid">
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">EUR/USD</div>
+                            <div class="signal-action action-call">CALL</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> 2 min ago</span>
+                            <span><i class="fas fa-user"></i> QuantumAI</span>
+                        </div>
+                        <div class="signal-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Expiry</span>
+                                <span class="detail-value">5 min</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Entry Price</span>
+                                <span class="detail-value">1.0845</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Target</span>
+                                <span class="detail-value">1.0860</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Confidence</span>
+                                <span class="detail-value confidence-stars">★★★★★</span>
+                            </div>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="like-btn">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">42</span>
+                            </button>
+                            <div class="signal-status status-active">
+                                ACTIVE
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">BTC/USD</div>
+                            <div class="signal-action action-put">PUT</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> 5 min ago</span>
+                            <span><i class="fas fa-user"></i> QuantumAI</span>
+                        </div>
+                        <div class="signal-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Expiry</span>
+                                <span class="detail-value">10 min</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Entry Price</span>
+                                <span class="detail-value">45283.12</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Target</span>
+                                <span class="detail-value">45100.00</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Confidence</span>
+                                <span class="detail-value confidence-stars">★★★★☆</span>
+                            </div>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="like-btn liked">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">28</span>
+                            </button>
+                            <div class="signal-status status-active">
+                                ACTIVE
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">XAU/USD</div>
+                            <div class="signal-action action-call">CALL</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> 15 min ago</span>
+                            <span><i class="fas fa-user"></i> QuantumAI</span>
+                        </div>
+                        <div class="signal-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Expiry</span>
+                                <span class="detail-value">15 min</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Entry Price</span>
+                                <span class="detail-value">2034.56</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Target</span>
+                                <span class="detail-value">2040.00</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Confidence</span>
+                                <span class="detail-value confidence-stars">★★★★★</span>
+                            </div>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="like-btn">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">35</span>
+                            </button>
+                            <div class="signal-status status-hit">
+                                HIT
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">GBP/USD</div>
+                            <div class="signal-action action-put">PUT</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> 8 min ago</span>
+                            <span><i class="fas fa-user"></i> QuantumAI</span>
+                        </div>
+                        <div class="signal-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Expiry</span>
+                                <span class="detail-value">8 min</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Entry Price</span>
+                                <span class="detail-value">1.2678</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Target</span>
+                                <span class="detail-value">1.2660</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Confidence</span>
+                                <span class="detail-value confidence-stars">★★★☆☆</span>
+                            </div>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="like-btn">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">19</span>
+                            </button>
+                            <div class="signal-status status-active">
+                                ACTIVE
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">USD/JPY</div>
+                            <div class="signal-action action-call">CALL</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> 3 min ago</span>
+                            <span><i class="fas fa-user"></i> QuantumAI</span>
+                        </div>
+                        <div class="signal-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Expiry</span>
+                                <span class="detail-value">7 min</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Entry Price</span>
+                                <span class="detail-value">148.25</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Target</span>
+                                <span class="detail-value">148.45</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Confidence</span>
+                                <span class="detail-value confidence-stars">★★★★☆</span>
+                            </div>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="like-btn liked">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">31</span>
+                            </button>
+                            <div class="signal-status status-active">
+                                ACTIVE
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">ETH/USD</div>
+                            <div class="signal-action action-call">CALL</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> 12 min ago</span>
+                            <span><i class="fas fa-user"></i> QuantumAI</span>
+                        </div>
+                        <div class="signal-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Expiry</span>
+                                <span class="detail-value">12 min</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Entry Price</span>
+                                <span class="detail-value">2415.75</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Target</span>
+                                <span class="detail-value">2430.00</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Confidence</span>
+                                <span class="detail-value confidence-stars">★★★★★</span>
+                            </div>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="like-btn">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">47</span>
+                            </button>
+                            <div class="signal-status status-hit">
+                                HIT
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Create Signal Button (Admin Only) -->
+                <div class="create-signal-btn" id="createSignalBtn" style="display: none;">
+                    <button class="btn-quantum">
+                        <i class="fas fa-plus"></i> POST NEW SIGNAL
                     </button>
-                    <button id="watchDemoBtn" class="btn-outline">
-                        <i class="fas fa-play-circle"></i> WATCH DEMO
-                    </button>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="quantum-sphere"></div>
-            </div>
-        </div>
-    </header>
+        </section>
 
-    <!-- Live Signals Section -->
-    <section id="signals" class="signals-section">
-        <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-bolt"></i> LIVE QUANTUM SIGNALS</h2>
-                <p class="section-subtitle">Real-time trading opportunities from Pocket Option</p>
-            </div>
-            
-            <div class="signals-controls">
-                <div class="filters">
-                    <button class="filter-btn active" data-filter="all">All Signals</button>
-                    <button class="filter-btn" data-filter="active">Active</button>
-                    <button class="filter-btn" data-filter="call">CALL</button>
-                    <button class="filter-btn" data-filter="put">PUT</button>
-                    <button class="filter-btn" data-filter="hit">HIT</button>
-                </div>
-                <div class="sort-options">
-                    <select id="sortSelect" class="quantum-select">
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="confidence">High Confidence</option>
-                        <option value="likes">Most Liked</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="signals-grid" id="signalsGrid">
-                <!-- Signals will be loaded here -->
-                <div class="loading-signals">
-                    <div class="quantum-loader"></div>
-                    <p>Loading Quantum Signals...</p>
-                </div>
-            </div>
-            
-            <div class="create-signal-btn" id="createSignalBtn" style="display: none;">
-                <button class="btn-quantum">
-                    <i class="fas fa-plus"></i> POST NEW SIGNAL
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Performance Section -->
-    <section id="performance" class="performance-section">
-        <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-chart-bar"></i> QUANTUM PERFORMANCE</h2>
-                <p class="section-subtitle">Real verified results from our trading algorithms</p>
-            </div>
-            
-            <div class="performance-grid">
-                <div class="performance-card">
-                    <div class="performance-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h3>84.7%</h3>
-                    <p>Overall Accuracy</p>
-                    <div class="performance-trend up">
-                        <i class="fas fa-arrow-up"></i> 2.3% this week
-                    </div>
+        <!-- ====== HIDDEN SECTIONS (Load when clicked from dropdown) ====== -->
+        
+        <!-- Trading Tools Section -->
+        <section id="trading-tools" class="signals-section hidden-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-tools"></i> PROFESSIONAL TRADING TOOLS</h2>
+                    <p class="section-subtitle">Advanced tools for serious traders</p>
                 </div>
                 
-                <div class="performance-card">
-                    <div class="performance-icon">
-                        <i class="fas fa-bolt"></i>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3>Profit Calculator</h3>
+                        <p>Calculate potential profits, risk/reward ratios, and position sizing for any trade setup</p>
+                        <button class="btn-tool">Open Calculator</button>
                     </div>
-                    <h3>127</h3>
-                    <p>Signals This Month</p>
-                    <div class="performance-trend up">
-                        <i class="fas fa-arrow-up"></i> 18% increase
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3>Portfolio Analyzer</h3>
+                        <p>Analyze your trading portfolio performance, risk distribution, and drawdown analysis</p>
+                        <button class="btn-tool">Analyze Portfolio</button>
                     </div>
-                </div>
-                
-                <div class="performance-card">
-                    <div class="performance-icon">
-                        <i class="fas fa-users"></i>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h3>Risk Management</h3>
+                        <p>Advanced risk calculation, position sizing, and stop-loss optimization tools</p>
+                        <button class="btn-tool">Manage Risk</button>
                     </div>
-                    <h3>2,843</h3>
-                    <p>VIP Members</p>
-                    <div class="performance-trend up">
-                        <i class="fas fa-arrow-up"></i> 247 new members
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Trading Bots</h3>
+                        <p>Automate your trading strategies with our customizable bot platform</p>
+                        <button class="btn-tool">Explore Bots</button>
                     </div>
-                </div>
-                
-                <div class="performance-card">
-                    <div class="performance-icon">
-                        <i class="fas fa-star"></i>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Backtesting Suite</h3>
+                        <p>Test your trading strategies against historical market data</p>
+                        <button class="btn-tool">Start Backtesting</button>
                     </div>
-                    <h3>4.9/5.0</h3>
-                    <p>Member Satisfaction</p>
-                    <div class="performance-trend up">
-                        <i class="fas fa-arrow-up"></i> 98% positive
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3>Alert Manager</h3>
+                        <p>Set custom price alerts and technical indicator notifications</p>
+                        <button class="btn-tool">Set Alerts</button>
                     </div>
                 </div>
             </div>
-            
-            <div class="performance-chart">
-                <h3><i class="fas fa-chart-line"></i> Weekly Performance</h3>
-                <canvas id="performanceChart"></canvas>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- VIP Pricing Section -->
-    <section id="pricing" class="pricing-section">
-        <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-crown"></i> QUANTUM VIP ACCESS</h2>
-                <p class="section-subtitle">Choose your quantum trading tier</p>
+        <!-- Market Analysis Section -->
+        <section id="market-analysis" class="signals-section hidden-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-bar"></i> MARKET ANALYSIS</h2>
+                    <p class="section-subtitle">Daily market insights and technical analysis</p>
+                </div>
+                
+                <div class="analysis-container">
+                    <div class="market-overview">
+                        <h3>Market Overview</h3>
+                        <div class="overview-grid">
+                            <div class="overview-card bullish">
+                                <h4>Bullish Markets</h4>
+                                <ul>
+                                    <li>NASDAQ +1.2%</li>
+                                    <li>Gold +0.8%</li>
+                                    <li>BTC +2.3%</li>
+                                    <li>Silver +1.1%</li>
+                                    <li>DAX +0.7%</li>
+                                </ul>
+                            </div>
+                            <div class="overview-card bearish">
+                                <h4>Bearish Markets</h4>
+                                <ul>
+                                    <li>USD/JPY -0.4%</li>
+                                    <li>Oil -1.2%</li>
+                                    <li>FTSE -0.3%</li>
+                                    <li>AUD/USD -0.2%</li>
+                                    <li>Natural Gas -2.1%</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="technical-analysis">
+                        <h3>Technical Analysis</h3>
+                        <div class="analysis-chart">
+                            <canvas id="marketChart"></canvas>
+                        </div>
+                        <div class="analysis-insights">
+                            <h4>Key Insights</h4>
+                            <ul>
+                                <li>EUR/USD breaking resistance at 1.0850 - Bullish momentum confirmed</li>
+                                <li>BTC facing resistance at $46,000 - Watch for breakout</li>
+                                <li>Gold shows strength above $2,030 - Target $2,050</li>
+                                <li>USD/JPY in consolidation range 147.50-148.50</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-header">
+        </section>
+
+        <!-- Economic Calendar Section -->
+        <section id="economic-calendar" class="signals-section hidden-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-alt"></i> ECONOMIC CALENDAR</h2>
+                    <p class="section-subtitle">Upcoming economic events that move markets</p>
+                </div>
+                
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Event</th>
+                            <th>Currency</th>
+                            <th>Impact</th>
+                            <th>Forecast</th>
+                            <th>Previous</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>14:30 GMT</td>
+                            <td>US Non-Farm Payrolls</td>
+                            <td>USD</td>
+                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
+                            <td>180K</td>
+                            <td>199K</td>
+                        </tr>
+                        <tr>
+                            <td>15:00 GMT</td>
+                            <td>US Unemployment Rate</td>
+                            <td>USD</td>
+                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
+                            <td>3.8%</td>
+                            <td>3.7%</td>
+                        </tr>
+                        <tr>
+                            <td>13:30 GMT</td>
+                            <td>Average Hourly Earnings</td>
+                            <td>USD</td>
+                            <td><span style="color: var(--trading-yellow); font-weight: bold;">MEDIUM</span></td>
+                            <td>0.3%</td>
+                            <td>0.4%</td>
+                        </tr>
+                        <tr>
+                            <td>12:00 GMT</td>
+                            <td>BoE Interest Rate Decision</td>
+                            <td>GBP</td>
+                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
+                            <td>5.25%</td>
+                            <td>5.25%</td>
+                        </tr>
+                        <tr>
+                            <td>11:45 GMT</td>
+                            <td>ECB Press Conference</td>
+                            <td>EUR</td>
+                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>10:00 GMT</td>
+                            <td>German CPI</td>
+                            <td>EUR</td>
+                            <td><span style="color: var(--trading-yellow); font-weight: bold;">MEDIUM</span></td>
+                            <td>3.2%</td>
+                            <td>3.7%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Trading Academy Section -->
+        <section id="trading-academy" class="signals-section hidden-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-university"></i> QUANTUM TRADING ACADEMY</h2>
+                    <p class="section-subtitle">Master trading with our comprehensive education platform</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3>Beginner Course</h3>
+                        <p>Learn the basics of trading, terminology, and risk management</p>
+                        <button class="btn-tool">Start Learning</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Technical Analysis</h3>
+                        <p>Master chart patterns, indicators, and price action trading</p>
+                        <button class="btn-tool">Explore Course</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Trading Psychology</h3>
+                        <p>Develop the mindset of successful traders</p>
+                        <button class="btn-tool">Learn Psychology</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-chess"></i>
+                        </div>
+                        <h3>Advanced Strategies</h3>
+                        <p>Institutional-grade trading strategies and techniques</p>
+                        <button class="btn-tool">Study Strategies</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Webinars Section -->
+        <section id="webinars" class="signals-section hidden-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-video"></i> LIVE TRADING WEBINARS</h2>
+                    <p class="section-subtitle">Learn from professional traders in real-time</p>
+                </div>
+                
+                <div class="signals-grid">
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">Live Market Analysis</div>
+                            <div class="signal-action action-call">LIVE</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> Today, 15:00 GMT</span>
+                            <span><i class="fas fa-user"></i> John Trader (Pro)</span>
+                        </div>
+                        <div class="signal-details">
+                            <p>Real-time market analysis and trade setups for the coming week. Learn how to identify high-probability trading opportunities.</p>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="btn-quantum">
+                                <i class="fas fa-play"></i> Join Webinar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">Risk Management Masterclass</div>
+                            <div class="signal-action action-put">UPCOMING</div>
+                        </div>
+                        <div class="signal-meta">
+                            <span><i class="far fa-clock"></i> Tomorrow, 14:00 GMT</span>
+                            <span><i class="fas fa-user"></i> Sarah Analyst</span>
+                        </div>
+                        <div class="signal-details">
+                            <p>Learn advanced risk management techniques to protect your capital and maximize profits.</p>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="btn-quantum">
+                                <i class="fas fa-calendar-plus"></i> Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIP Pricing Section -->
+        <section id="pricing" class="signals-section hidden-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-crown"></i> VIP MEMBERSHIP PLANS</h2>
+                    <p class="section-subtitle">Choose your quantum trading tier</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
                         <h3>FREE</h3>
-                        <div class="price">$0<span>/month</span></div>
+                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--quantum-neon); margin: 1rem 0;">$0<span style="font-size: 1rem; color: var(--quantum-text-secondary);">/month</span></div>
+                        <ul style="text-align: left; margin: 1.5rem 0; padding-left: 1.5rem;">
+                            <li>3 Daily Signals</li>
+                            <li>Basic Performance Stats</li>
+                            <li>Community Access</li>
+                            <li><del>Real-time Alerts</del></li>
+                            <li><del>VIP Signals</del></li>
+                        </ul>
+                        <button class="btn-tool">Current Plan</button>
                     </div>
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check"></i> 3 Daily Signals</li>
-                        <li><i class="fas fa-check"></i> Basic Performance Stats</li>
-                        <li><i class="fas fa-check"></i> Community Access</li>
-                        <li><i class="fas fa-times"></i> <del>Real-time Alerts</del></li>
-                        <li><i class="fas fa-times"></i> <del>VIP Signals</del></li>
-                        <li><i class="fas fa-times"></i> <del>Advanced Analytics</del></li>
-                    </ul>
-                    <button class="btn-pricing">Current Plan</button>
-                </div>
-                
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">MOST POPULAR</div>
-                    <div class="pricing-header">
+                    
+                    <div class="tool-card" style="border: 2px solid var(--quantum-accent); transform: scale(1.05);">
+                        <div class="tool-icon" style="background: linear-gradient(135deg, var(--quantum-accent), var(--trading-purple));">
+                            <i class="fas fa-crown"></i>
+                        </div>
                         <h3>VIP</h3>
-                        <div class="price">$97<span>/month</span></div>
+                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--quantum-neon); margin: 1rem 0;">$97<span style="font-size: 1rem; color: var(--quantum-text-secondary);">/month</span></div>
+                        <ul style="text-align: left; margin: 1.5rem 0; padding-left: 1.5rem;">
+                            <li>All Daily Signals</li>
+                            <li>Real-time Mobile Alerts</li>
+                            <li>VIP Only Signals</li>
+                            <li>Advanced Analytics</li>
+                            <li>Priority Support</li>
+                        </ul>
+                        <button class="btn-quantum">UPGRADE TO VIP</button>
                     </div>
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check"></i> All Daily Signals</li>
-                        <li><i class="fas fa-check"></i> Real-time Mobile Alerts</li>
-                        <li><i class="fas fa-check"></i> Advanced Analytics</li>
-                        <li><i class="fas fa-check"></i> VIP Only Signals</li>
-                        <li><i class="fas fa-check"></i> Risk Management Tools</li>
-                        <li><i class="fas fa-check"></i> Priority Support</li>
-                    </ul>
-                    <button class="btn-pricing btn-quantum">UPGRADE TO VIP</button>
-                </div>
-                
-                <div class="pricing-card">
-                    <div class="pricing-header">
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
                         <h3>PRO</h3>
-                        <div class="price">$297<span>/month</span></div>
+                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--quantum-neon); margin: 1rem 0;">$297<span style="font-size: 1rem; color: var(--quantum-text-secondary);">/month</span></div>
+                        <ul style="text-align: left; margin: 1.5rem 0; padding-left: 1.5rem;">
+                            <li>Everything in VIP</li>
+                            <li>1-on-1 Coaching</li>
+                            <li>Custom Signal Filters</li>
+                            <li>API Access</li>
+                            <li>Dedicated Account Manager</li>
+                        </ul>
+                        <button class="btn-tool">GO PRO</button>
                     </div>
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check"></i> Everything in VIP</li>
-                        <li><i class="fas fa-check"></i> 1-on-1 Coaching</li>
-                        <li><i class="fas fa-check"></i> Custom Signal Filters</li>
-                        <li><i class="fas fa-check"></i> API Access</li>
-                        <li><i class="fas fa-check"></i> Early Beta Features</li>
-                        <li><i class="fas fa-check"></i> Dedicated Account Manager</li>
-                    </ul>
-                    <button class="btn-pricing">GO PRO</button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Community Section -->
+        <section id="community" class="signals-section hidden-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> TRADING COMMUNITY</h2>
+                    <p class="section-subtitle">Connect with thousands of successful traders</p>
+                </div>
+                
+                <div class="signals-grid">
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">Trade Ideas</div>
+                            <div class="signal-action action-call">COMMUNITY</div>
+                        </div>
+                        <div class="signal-details">
+                            <p>Share your trade ideas and get feedback from experienced traders. Discuss setups and strategies.</p>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="btn-quantum">
+                                <i class="fas fa-lightbulb"></i> Browse Ideas
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">Leaderboard</div>
+                            <div class="signal-action action-put">RANKING</div>
+                        </div>
+                        <div class="signal-details">
+                            <p>See the top performing traders in our community. Learn from their strategies and performance.</p>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="btn-quantum">
+                                <i class="fas fa-trophy"></i> View Rankings
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="signal-card">
+                        <div class="signal-header">
+                            <div class="signal-asset">Discussion Forum</div>
+                            <div class="signal-action action-call">FORUM</div>
+                        </div>
+                        <div class="signal-details">
+                            <p>Join discussions about trading strategies, market analysis, and trading psychology.</p>
+                        </div>
+                        <div class="signal-footer">
+                            <button class="btn-quantum">
+                                <i class="fas fa-comments"></i> Join Discussion
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <!-- Footer -->
     <footer class="footer">
@@ -333,26 +2722,24 @@
                     <h4>TRADING</h4>
                     <ul class="footer-links">
                         <li><a href="#signals">Live Signals</a></li>
-                        <li><a href="#performance">Performance</a></li>
-                        <li><a href="#pricing">VIP Pricing</a></li>
-                        <li><a href="#">Trading Guide</a></li>
-                        <li><a href="#">Risk Management</a></li>
+                        <li><a href="#trading-tools">Trading Tools</a></li>
+                        <li><a href="#market-analysis">Market Analysis</a></li>
+                        <li><a href="#economic-calendar">Economic Calendar</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h4>LEGAL</h4>
+                    <h4>EDUCATION</h4>
                     <ul class="footer-links">
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Risk Disclaimer</a></li>
-                        <li><a href="#">Refund Policy</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#trading-academy">Trading Academy</a></li>
+                        <li><a href="#webinars">Live Webinars</a></li>
+                        <li><a href="#trading-strategies">Strategies</a></li>
+                        <li><a href="#psychology">Trading Psychology</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h4>CONTACT</h4>
+                    <h4>SUPPORT</h4>
                     <ul class="footer-contact">
                         <li><i class="fas fa-envelope"></i> support@quantumsignals.com</li>
                         <li><i class="fas fa-headset"></i> 24/7 VIP Support</li>
@@ -378,15 +2765,15 @@
 
     <!-- Signal Creation Modal -->
     <div id="signalModal" class="modal">
-        <div class="modal-content quantum-modal">
+        <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h3><i class="fas fa-plus-circle"></i> Create New Signal</h3>
             <form id="signalForm">
+                <div class="form-group">
+                    <label for="assetName">Asset Name *</label>
+                    <input type="text" id="assetName" required placeholder="EUR/USD, BTC, Gold, etc.">
+                </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="assetName">Asset Name *</label>
-                        <input type="text" id="assetName" required placeholder="EUR/USD, BTC, Gold, etc.">
-                    </div>
                     <div class="form-group">
                         <label for="action">Action *</label>
                         <select id="action" required>
@@ -395,25 +2782,11 @@
                             <option value="PUT">PUT (Sell/Short)</option>
                         </select>
                     </div>
-                </div>
-                
-                <div class="form-row">
                     <div class="form-group">
                         <label for="expiryTime">Expiry Time (Minutes) *</label>
                         <input type="number" id="expiryTime" required min="1" max="60" placeholder="5">
                     </div>
-                    <div class="form-group">
-                        <label for="confidenceLevel">Confidence Level *</label>
-                        <select id="confidenceLevel" required>
-                            <option value="1">★ Low (1/5)</option>
-                            <option value="2">★★ Medium-Low (2/5)</option>
-                            <option value="3">★★★ Medium (3/5)</option>
-                            <option value="4">★★★★ High (4/5)</option>
-                            <option value="5">★★★★★ Very High (5/5)</option>
-                        </select>
-                    </div>
                 </div>
-                
                 <div class="form-row">
                     <div class="form-group">
                         <label for="entryPrice">Entry Price</label>
@@ -423,17 +2796,17 @@
                         <label for="targetPrice">Target Price</label>
                         <input type="number" step="0.00001" id="targetPrice" placeholder="Take profit level">
                     </div>
-                    <div class="form-group">
-                        <label for="stopLoss">Stop Loss</label>
-                        <input type="number" step="0.00001" id="stopLoss" placeholder="Stop loss level">
-                    </div>
                 </div>
-                
                 <div class="form-group">
-                    <label for="signalNotes">Additional Notes</label>
-                    <textarea id="signalNotes" rows="3" placeholder="Market analysis, timing, risk factors..."></textarea>
+                    <label for="confidenceLevel">Confidence Level *</label>
+                    <select id="confidenceLevel" required>
+                        <option value="1">★ Low (1/5)</option>
+                        <option value="2">★★ Medium-Low (2/5)</option>
+                        <option value="3">★★★ Medium (3/5)</option>
+                        <option value="4">★★★★ High (4/5)</option>
+                        <option value="5">★★★★★ Very High (5/5)</option>
+                    </select>
                 </div>
-                
                 <button type="submit" class="btn-quantum">
                     <i class="fas fa-paper-plane"></i> PUBLISH SIGNAL
                 </button>
@@ -441,12 +2814,644 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
-    <script src="auth.js"></script>
-    <script src="signals.js"></script>
-    <script src="app.js"></script>
+    <script>
+        // ====== CONFIGURATION ======
+        // Replace these with your actual Supabase credentials
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key-here';
+        
+        // ====== GLOBAL VARIABLES ======
+        let supabase;
+        let currentUser = null;
+        let isAdmin = false;
+        let currentSection = 'hero';
+        let marketChart = null;
+
+        // ====== INITIALIZATION ======
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize Supabase
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                    auth: {
+                        autoRefreshToken: true,
+                        persistSession: true
+                    }
+                });
+
+                // Check existing session
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    await handleUserLogin(session.user);
+                }
+
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Initialize market chart
+                initializeMarketChart();
+                
+                // Setup auth state change listener
+                supabase.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_IN' && session) {
+                        handleUserLogin(session.user);
+                    } else if (event === 'SIGNED_OUT') {
+                        handleUserLogout();
+                    }
+                });
+
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('Error initializing application', 'error');
+            }
+        });
+
+        // ====== AUTHENTICATION ======
+        async function handleUserLogin(user) {
+            currentUser = user;
+            updateAuthUI();
+            
+            // Check if user is admin
+            try {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('is_admin')
+                    .eq('id', user.id)
+                    .single();
+                
+                isAdmin = profile?.is_admin || false;
+                
+                if (isAdmin) {
+                    document.getElementById('createSignalBtn').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+            }
+            
+            showToast(`Welcome back, ${user.email.split('@')[0]}!`, 'success');
+        }
+
+        function handleUserLogout() {
+            currentUser = null;
+            isAdmin = false;
+            updateAuthUI();
+            showToast('Logged out successfully', 'info');
+        }
+
+        function updateAuthUI() {
+            const authButton = document.getElementById('authButton');
+            const notificationBtn = document.getElementById('notificationBtn');
+            
+            if (currentUser) {
+                authButton.innerHTML = `<i class="fas fa-user"></i> <span>${currentUser.email.split('@')[0]}</span>`;
+                authButton.onclick = () => logout();
+                notificationBtn.style.display = 'flex';
+            } else {
+                authButton.innerHTML = `<i class="fas fa-user"></i> <span>Sign In</span>`;
+                authButton.onclick = () => openAuthModal('login');
+                notificationBtn.style.display = 'none';
+                document.getElementById('createSignalBtn').style.display = 'none';
+            }
+        }
+
+        async function login(email, password) {
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+                
+                showToast('Login successful!', 'success');
+                closeAuthModal();
+                return true;
+            } catch (error) {
+                showToast(error.message, 'error');
+                return false;
+            }
+        }
+
+        async function signup(email, password, username) {
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            username: username
+                        }
+                    }
+                });
+
+                if (error) throw error;
+                
+                showToast('Registration successful! Please check your email.', 'success');
+                closeAuthModal();
+                return true;
+            } catch (error) {
+                showToast(error.message, 'error');
+                return false;
+            }
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                handleUserLogout();
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // ====== NAVIGATION ======
+        function setupEventListeners() {
+            // Menu toggle
+            document.getElementById('menuToggle').addEventListener('click', () => {
+                document.getElementById('navLinks').classList.toggle('active');
+            });
+
+            // Navigation links
+            document.querySelectorAll('.nav-link, .dropdown-item').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    
+                    // Close mobile menu
+                    document.getElementById('navLinks').classList.remove('active');
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.nav-link.active').forEach(activeLink => {
+                        activeLink.classList.remove('active');
+                    });
+                    link.classList.add('active');
+                    
+                    // Navigate to section
+                    navigateToSection(targetId);
+                });
+            });
+
+            // Auth buttons
+            document.getElementById('loginBtn').addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    showToast('Please fill in all fields', 'error');
+                    return;
+                }
+                
+                await login(email, password);
+            });
+
+            document.getElementById('signupBtn').addEventListener('click', async () => {
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const username = document.getElementById('signupUsername').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (!email || !password || !username) {
+                    showToast('Please fill in all required fields', 'error');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showToast('Passwords do not match', 'error');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    showToast('Password must be at least 6 characters', 'error');
+                    return;
+                }
+                
+                await signup(email, password, username);
+            });
+
+            document.getElementById('startDemoBtn').addEventListener('click', () => {
+                const email = document.getElementById('demoEmail').value;
+                if (!email) {
+                    showToast('Please enter your email for demo', 'error');
+                    return;
+                }
+                showToast('Demo account started with $10,000 virtual money!', 'success');
+                closeAuthModal();
+            });
+
+            // Get Started button
+            document.getElementById('getStartedBtn').addEventListener('click', () => {
+                openAuthModal('signup');
+            });
+
+            // Demo button
+            document.getElementById('watchDemoBtn').addEventListener('click', () => {
+                openAuthModal('demo');
+            });
+
+            // Video button
+            document.getElementById('watchVideoBtn').addEventListener('click', () => {
+                showToast('Opening tutorial video...', 'info');
+            });
+
+            // Notification button
+            document.getElementById('notificationBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const panel = document.getElementById('notificationPanel');
+                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Mark all as read
+            document.getElementById('markAllRead').addEventListener('click', () => {
+                document.querySelectorAll('.notification-item.unread').forEach(item => {
+                    item.classList.remove('unread');
+                });
+                document.getElementById('notificationCount').textContent = '0';
+                showToast('All notifications marked as read', 'success');
+            });
+
+            // Close notification panel when clicking outside
+            document.addEventListener('click', (event) => {
+                const panel = document.getElementById('notificationPanel');
+                const button = document.getElementById('notificationBtn');
+                
+                if (panel.style.display === 'block' && 
+                    !panel.contains(event.target) && 
+                    !button.contains(event.target)) {
+                    panel.style.display = 'none';
+                }
+            });
+
+            // Modal close buttons
+            document.querySelectorAll('.close-modal').forEach(button => {
+                button.addEventListener('click', () => {
+                    button.closest('.modal').style.display = 'none';
+                });
+            });
+
+            // Close modals when clicking outside
+            window.addEventListener('click', (event) => {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+
+            // Auth tabs
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    switchAuthTab(tab.dataset.tab);
+                });
+            });
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    filterSignals(button.dataset.filter);
+                });
+            });
+
+            // Notification tabs
+            document.querySelectorAll('.notification-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.notification-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    filterNotifications(tab.dataset.tab);
+                });
+            });
+
+            // Signal form submission
+            document.getElementById('signalForm')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await createSignal();
+            });
+
+            // Refresh signals
+            document.getElementById('refreshSignals')?.addEventListener('click', () => {
+                refreshSignals();
+            });
+
+            // Like buttons
+            document.addEventListener('click', async (e) => {
+                if (e.target.closest('.like-btn')) {
+                    const button = e.target.closest('.like-btn');
+                    
+                    if (!currentUser) {
+                        showToast('Please login to like signals', 'error');
+                        openAuthModal('login');
+                        return;
+                    }
+                    
+                    await toggleLike(button);
+                }
+            });
+
+            // Tool buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-tool') || e.target.closest('.btn-quantum')) {
+                    const button = e.target.closest('.btn-tool') || e.target.closest('.btn-quantum');
+                    const parentCard = button.closest('.tool-card') || button.closest('.signal-card');
+                    const title = parentCard?.querySelector('h3')?.textContent || 'Feature';
+                    
+                    if (button.textContent.includes('UPGRADE')) {
+                        showToast(`Opening ${title} upgrade page...`, 'info');
+                    } else if (button.textContent.includes('Current Plan')) {
+                        showToast('You are currently on the Free plan', 'info');
+                    } else {
+                        showToast(`Opening ${title}...`, 'info');
+                    }
+                }
+            });
+        }
+
+        function navigateToSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.active-section').forEach(section => {
+                section.classList.remove('active-section');
+                section.classList.add('hidden-section');
+            });
+            
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden-section');
+                targetSection.classList.add('active-section');
+                
+                // Load section data if needed
+                loadSectionData(sectionId);
+                
+                // Scroll to top of section
+                window.scrollTo({ top: targetSection.offsetTop - 80, behavior: 'smooth' });
+            }
+        }
+
+        function switchAuthTab(tabName) {
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.toggle('active', form.id === `${tabName}Form`);
+            });
+        }
+
+        function openAuthModal(tab = 'login') {
+            document.getElementById('authModal').style.display = 'flex';
+            switchAuthTab(tab);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+            document.getElementById('loginForm').reset();
+            document.getElementById('signupForm').reset();
+            document.getElementById('demoForm').reset();
+        }
+
+        // ====== SIGNALS MANAGEMENT ======
+        async function refreshSignals() {
+            showToast('Refreshing signals...', 'info');
+            // In a real app, this would fetch new signals from the server
+            setTimeout(() => {
+                showToast('Signals refreshed successfully!', 'success');
+            }, 1000);
+        }
+
+        function filterSignals(filter) {
+            const signals = document.querySelectorAll('.signal-card');
+            signals.forEach(signal => {
+                const asset = signal.querySelector('.signal-asset').textContent.toLowerCase();
+                if (filter === 'all') {
+                    signal.style.display = 'block';
+                } else if (filter === 'forex' && (asset.includes('/') || asset.includes('eur') || asset.includes('usd') || asset.includes('gbp') || asset.includes('jpy'))) {
+                    signal.style.display = 'block';
+                } else if (filter === 'crypto' && (asset.includes('btc') || asset.includes('eth') || asset.includes('crypto'))) {
+                    signal.style.display = 'block';
+                } else if (filter === 'commodities' && (asset.includes('xau') || asset.includes('gold') || asset.includes('oil'))) {
+                    signal.style.display = 'block';
+                } else {
+                    signal.style.display = 'none';
+                }
+            });
+        }
+
+        async function toggleLike(button) {
+            const likeCount = button.querySelector('.like-count');
+            const isLiked = button.classList.contains('liked');
+            
+            if (isLiked) {
+                button.classList.remove('liked');
+                likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                showToast('Like removed', 'info');
+            } else {
+                button.classList.add('liked');
+                likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                showToast('Signal liked!', 'success');
+            }
+        }
+
+        async function createSignal() {
+            if (!currentUser) {
+                showToast('Please login to create signals', 'error');
+                return;
+            }
+
+            if (!isAdmin) {
+                showToast('Only admins can create signals', 'error');
+                return;
+            }
+
+            const assetName = document.getElementById('assetName').value;
+            const action = document.getElementById('action').value;
+            const expiryTime = parseInt(document.getElementById('expiryTime').value);
+            const confidenceLevel = parseInt(document.getElementById('confidenceLevel').value);
+            const entryPrice = document.getElementById('entryPrice').value || null;
+            const targetPrice = document.getElementById('targetPrice').value || null;
+
+            if (!assetName || !action || !expiryTime || !confidenceLevel) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // In a real app, this would send data to Supabase
+            showToast('Signal created successfully!', 'success');
+            
+            document.getElementById('signalModal').style.display = 'none';
+            document.getElementById('signalForm').reset();
+        }
+
+        // ====== NOTIFICATIONS ======
+        function filterNotifications(filter) {
+            const notifications = document.querySelectorAll('.notification-item');
+            notifications.forEach(notification => {
+                if (filter === 'all') {
+                    notification.style.display = 'block';
+                } else if (filter === 'signals') {
+                    const title = notification.querySelector('.notification-title').textContent;
+                    notification.style.display = title.includes('Signal') ? 'block' : 'none';
+                } else if (filter === 'system') {
+                    const title = notification.querySelector('.notification-title').textContent;
+                    notification.style.display = title.includes('Market') || title.includes('System') ? 'block' : 'none';
+                } else {
+                    notification.style.display = 'none';
+                }
+            });
+        }
+
+        // ====== MARKET CHART ======
+        function initializeMarketChart() {
+            const ctx = document.getElementById('marketChart');
+            if (!ctx) return;
+            
+            marketChart = new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'EUR/USD',
+                        data: [1.0750, 1.0780, 1.0800, 1.0820, 1.0845, 1.0830, 1.0850],
+                        borderColor: 'rgb(0, 212, 255)',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'BTC/USD',
+                        data: [42000, 42500, 43500, 44000, 45283, 44800, 45000],
+                        borderColor: 'rgb(0, 255, 136)',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgb(176, 176, 208)',
+                                font: {
+                                    family: 'Inter'
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(42, 42, 90, 0.5)'
+                            },
+                            ticks: {
+                                color: 'rgb(176, 176, 208)'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(42, 42, 90, 0.5)'
+                            },
+                            ticks: {
+                                color: 'rgb(176, 176, 208)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ====== SECTION DATA LOADING ======
+        function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'market-analysis':
+                    if (marketChart) {
+                        marketChart.update();
+                    }
+                    break;
+                // Add more cases for other sections as needed
+            }
+        }
+
+        // ====== UTILITY FUNCTIONS ======
+        function showToast(message, type = 'info') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Remove toast after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        // ====== SUPABASE SCHEMA SETUP INSTRUCTIONS ======
+        /*
+        To set up the Supabase backend, run these SQL commands in your Supabase SQL Editor:
+        
+        1. Create profiles table:
+        CREATE TABLE profiles (
+          id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
+          username TEXT UNIQUE,
+          full_name TEXT,
+          avatar_url TEXT,
+          is_admin BOOLEAN DEFAULT FALSE,
+          subscription_tier TEXT DEFAULT 'free',
+          subscription_expiry TIMESTAMPTZ,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        2. Create signals table:
+        CREATE TABLE signals (
+          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+          asset_name TEXT NOT NULL,
+          action TEXT NOT NULL CHECK (action IN ('CALL', 'PUT')),
+          expiry_time INTEGER NOT NULL,
+          entry_price DECIMAL(10,5),
+          target_price DECIMAL(10,5),
+          stop_loss DECIMAL(10,5),
+          confidence_level INTEGER CHECK (confidence_level >= 1 AND confidence_level <= 5),
+          status TEXT DEFAULT 'active' CHECK (status IN ('active', 'hit', 'miss', 'expired')),
+          created_by UUID REFERENCES profiles(id),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        3. Create signal_likes table:
+        CREATE TABLE signal_likes (
+          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+          signal_id UUID REFERENCES signals(id) ON DELETE CASCADE,
+          user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(signal_id, user_id)
+        );
+
+        4. Create notifications table:
+        CREATE TABLE notifications (
+          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+          user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+          title TEXT NOT NULL,
+          message TEXT NOT NULL,
+          type TEXT DEFAULT 'info',
+          read BOOLEAN DEFAULT FALSE,
+          related_signal_id UUID REFERENCES signals(id),
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        5. Enable Row Level Security (RLS):
+        ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE signals ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE signal_likes ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+
+        6. Create RLS policies for each table.
+        */
+    </script>
 </body>
 </html>
