@@ -3,44 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Trade Signals VIP | Institutional Trading Platform</title>
+    <title>Quantum Trade Signals VIP | Pocket Option Style</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/96/000000/quantum-computing.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* ====== VARIABLES ====== */
         :root {
-            --quantum-primary: #0c0c1d;
-            --quantum-secondary: #1a1a3d;
-            --quantum-accent: #00d4ff;
-            --quantum-accent-dark: #0088cc;
-            --quantum-purple: #8a2be2;
-            --quantum-neon: #00ff9d;
-            --quantum-danger: #ff2d75;
-            --quantum-success: #00ff88;
-            --quantum-warning: #ffaa00;
-            --quantum-text: #ffffff;
-            --quantum-text-secondary: #b0b0d0;
-            --quantum-border: #2a2a5a;
-            --quantum-card-bg: rgba(16, 16, 48, 0.9);
-            --quantum-glass: rgba(20, 20, 60, 0.7);
-            --quantum-glow: 0 0 20px var(--quantum-accent);
-            --quantum-glow-purple: 0 0 20px var(--quantum-purple);
+            /* Pocket Option Dark Theme Colors */
+            --po-dark-bg: #121723;
+            --po-dark-card: #1a1f30;
+            --po-dark-border: #2a3149;
+            --po-dark-text: #ffffff;
+            --po-dark-text-secondary: #8a94b3;
+            
+            /* Pocket Option Light Theme Colors */
+            --po-light-bg: #f5f7fa;
+            --po-light-card: #ffffff;
+            --po-light-border: #e1e5eb;
+            --po-light-text: #2d3748;
+            --po-light-text-secondary: #718096;
+            
+            /* Pocket Option Brand Colors */
+            --po-primary: #00b5d8;
+            --po-secondary: #2d3748;
+            --po-success: #38b2ac;
+            --po-danger: #f56565;
+            --po-warning: #ed8936;
+            --po-info: #4299e1;
+            --po-purple: #9f7aea;
             
             /* Trading Colors */
-            --trading-green: #00ff88;
-            --trading-red: #ff2d75;
-            --trading-yellow: #ffaa00;
-            --trading-blue: #00d4ff;
-            --trading-purple: #8a2be2;
-            --trading-orange: #ff6b35;
+            --trading-green: #38b2ac;
+            --trading-red: #f56565;
+            --trading-yellow: #ed8936;
+            --trading-blue: #4299e1;
             
-            /* Status Colors */
-            --status-up: var(--trading-green);
-            --status-down: var(--trading-red);
-            --status-neutral: var(--trading-yellow);
+            /* Current Theme */
+            --bg-primary: var(--po-dark-bg);
+            --bg-card: var(--po-dark-card);
+            --bg-border: var(--po-dark-border);
+            --text-primary: var(--po-dark-text);
+            --text-secondary: var(--po-dark-text-secondary);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --glow: 0 0 15px rgba(0, 181, 216, 0.3);
+        }
+
+        /* ====== THEME TOGGLE ====== */
+        .theme-toggle-container {
+            position: relative;
+        }
+
+        .theme-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--bg-border);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--bg-border);
+            transform: rotate(15deg);
+        }
+
+        .theme-toggle-btn .fa-sun {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle-btn .fa-sun {
+            display: block;
+        }
+
+        [data-theme="light"] .theme-toggle-btn .fa-moon {
+            display: none;
         }
 
         /* ====== RESET & BASE STYLES ====== */
@@ -51,37 +95,23 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--quantum-primary) 0%, #1a1035 100%);
-            color: var(--quantum-text);
+            font-family: 'Roboto', 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
-            background-attachment: fixed;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
-            z-index: -1;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         h1, h2, h3, h4, .logo-text {
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            letter-spacing: 1px;
         }
 
-        h1 { font-size: 3.5rem; }
-        h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
-        h3 { font-size: 1.8rem; margin-bottom: 1rem; }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        h3 { font-size: 1.4rem; margin-bottom: 1rem; }
 
         .container {
             max-width: 1400px;
@@ -89,18 +119,18 @@
             padding: 0 2rem;
         }
 
-        section { padding: 6rem 0; }
+        section { padding: 4rem 0; }
 
-        /* ====== NAVIGATION ====== */
+        /* ====== POCKET OPTION STYLE NAVIGATION ====== */
         .navbar {
-            background: var(--quantum-glass);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--quantum-border);
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--bg-border);
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
+            box-shadow: var(--shadow);
         }
 
         .nav-container {
@@ -119,27 +149,21 @@
         }
 
         .quantum-icon {
-            font-size: 2rem;
-            color: var(--quantum-accent);
-            animation: quantum-spin 10s linear infinite;
-        }
-
-        @keyframes quantum-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            font-size: 1.8rem;
+            color: var(--po-primary);
         }
 
         .logo-text {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 900;
-            color: var(--quantum-accent);
+            color: var(--po-primary);
             display: block;
         }
 
         .logo-subtext {
             font-size: 0.7rem;
-            color: var(--quantum-text-secondary);
-            letter-spacing: 2px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
             display: block;
         }
 
@@ -150,20 +174,21 @@
         }
 
         .nav-link {
-            color: var(--quantum-text);
+            color: var(--text-primary);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 1rem;
             border-radius: 8px;
+            font-size: 0.9rem;
         }
 
         .nav-link:hover, .nav-link.active {
-            background: rgba(0, 212, 255, 0.1);
-            color: var(--quantum-accent);
+            background: rgba(0, 181, 216, 0.1);
+            color: var(--po-primary);
         }
 
         .nav-dropdown {
@@ -186,17 +211,16 @@
             top: 100%;
             left: 0;
             min-width: 220px;
-            background: var(--quantum-card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--quantum-border);
-            border-radius: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 8px;
             padding: 0.5rem;
             opacity: 0;
             visibility: hidden;
             transform: translateY(10px);
             transition: all 0.3s ease;
             z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .nav-dropdown:hover .dropdown-menu {
@@ -214,31 +238,32 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem 1rem;
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
             text-decoration: none;
             border-radius: 6px;
             transition: all 0.3s;
+            font-size: 0.9rem;
         }
 
         .dropdown-item:hover {
-            background: rgba(0, 212, 255, 0.1);
-            color: var(--quantum-accent);
+            background: rgba(0, 181, 216, 0.1);
+            color: var(--po-primary);
             transform: translateX(5px);
         }
 
         .nav-auth {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .live-stats {
             display: flex;
             gap: 1rem;
             padding: 0.5rem 1rem;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            border: 1px solid var(--quantum-border);
+            border: 1px solid var(--bg-border);
         }
 
         .stat-item {
@@ -250,11 +275,11 @@
 
         .stat-label {
             font-size: 0.7rem;
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
         }
 
         .stat-value {
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
             font-size: 0.9rem;
         }
@@ -263,12 +288,12 @@
         .stat-value.down { color: var(--trading-red); }
 
         .btn-notification {
-            background: var(--quantum-secondary);
-            color: var(--quantum-text);
-            border: 1px solid var(--quantum-border);
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--bg-border);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -278,19 +303,19 @@
         }
 
         .btn-notification:hover {
-            background: var(--quantum-accent);
-            color: var(--quantum-primary);
+            background: var(--po-primary);
+            color: white;
         }
 
         .notification-badge {
             position: absolute;
             top: -5px;
             right: -5px;
-            background: var(--quantum-danger);
+            background: var(--po-danger);
             color: white;
             font-size: 0.7rem;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -298,68 +323,70 @@
         }
 
         .btn-auth {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s;
+            font-size: 0.9rem;
         }
 
         .btn-auth:hover {
             transform: translateY(-2px);
-            box-shadow: var(--quantum-glow);
+            box-shadow: var(--glow);
         }
 
         .menu-toggle {
             display: none;
             background: none;
             border: none;
-            color: var(--quantum-text);
-            font-size: 1.5rem;
+            color: var(--text-primary);
+            font-size: 1.2rem;
             cursor: pointer;
         }
 
-        /* ====== HERO SECTION ====== */
+        /* ====== HERO SECTION - POCKET OPTION STYLE ====== */
         .hero {
-            padding: 12rem 2rem 6rem;
+            padding: 8rem 2rem 4rem;
             max-width: 1400px;
             margin: 0 auto;
+            background: linear-gradient(135deg, rgba(0, 181, 216, 0.1) 0%, transparent 100%);
         }
 
         .hero-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            gap: 3rem;
             align-items: center;
         }
 
         .hero-badge {
             display: flex;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .badge-text {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .badge-live {
-            background: var(--quantum-danger);
+            background: var(--po-danger);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -376,7 +403,7 @@
         }
 
         .hero-text h1 {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -384,62 +411,65 @@
         }
 
         .hero-text h2 {
-            font-size: 1.5rem;
-            color: var(--quantum-accent);
-            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--po-primary);
+            margin-bottom: 1rem;
+            font-weight: 500;
         }
 
         .hero-description {
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 2rem;
             max-width: 600px;
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
         }
 
         .hero-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin: 2.5rem 0;
+            gap: 1rem;
+            margin: 2rem 0;
         }
 
         .stat-card {
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 10px;
-            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 8px;
+            padding: 1.2rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             transition: all 0.3s;
+            box-shadow: var(--shadow);
         }
 
         .stat-card:hover {
-            border-color: var(--quantum-accent);
-            transform: translateY(-5px);
+            border-color: var(--po-primary);
+            transform: translateY(-3px);
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--quantum-accent), var(--quantum-purple));
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
+            color: white;
         }
 
         .stat-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--quantum-neon);
+            color: var(--po-primary);
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            color: var(--quantum-text-secondary);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
             margin-top: 0.25rem;
         }
 
@@ -448,24 +478,25 @@
         }
 
         .btn-quantum-large {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             color: white;
             border: none;
-            padding: 1.2rem 2.5rem;
-            border-radius: 50px;
-            font-family: 'Orbitron', sans-serif;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.75rem;
             transition: all 0.3s;
+            box-shadow: var(--shadow);
         }
 
         .btn-quantum-large:hover {
             transform: translateY(-3px);
-            box-shadow: var(--quantum-glow);
+            box-shadow: var(--glow);
         }
 
         .cta-options {
@@ -476,13 +507,13 @@
 
         .btn-outline {
             background: transparent;
-            color: var(--quantum-accent);
-            border: 2px solid var(--quantum-accent);
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-family: 'Orbitron', sans-serif;
+            color: var(--po-primary);
+            border: 2px solid var(--po-primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -491,35 +522,36 @@
         }
 
         .btn-outline:hover {
-            background: var(--quantum-accent);
-            color: var(--quantum-primary);
+            background: var(--po-primary);
+            color: white;
         }
 
         .trusted-by {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--quantum-border);
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-border);
         }
 
         .trusted-label {
             display: block;
-            color: var(--quantum-text-secondary);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
         }
 
         .trusted-logos {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
         .trusted-logo {
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-card);
             border-radius: 6px;
-            font-size: 0.9rem;
-            color: var(--quantum-text-secondary);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--bg-border);
         }
 
         .hero-visual {
@@ -527,26 +559,26 @@
         }
 
         .trading-terminal {
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .terminal-header {
-            background: var(--quantum-secondary);
-            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
+            padding: 0.8rem 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--quantum-border);
         }
 
         .terminal-title {
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-weight: 600;
-            color: var(--quantum-accent);
+            color: white;
+            font-size: 0.9rem;
         }
 
         .terminal-controls {
@@ -555,12 +587,12 @@
         }
 
         .terminal-btn {
-            background: transparent;
-            border: 1px solid var(--quantum-border);
-            color: var(--quantum-text-secondary);
-            width: 30px;
-            height: 30px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -569,16 +601,15 @@
         }
 
         .terminal-btn:hover {
-            border-color: var(--quantum-accent);
-            color: var(--quantum-accent);
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .terminal-body {
-            padding: 1.5rem;
+            padding: 1.2rem;
         }
 
         .market-watch {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
 
         .market-header {
@@ -586,9 +617,9 @@
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 1rem;
             padding: 0.5rem 0;
-            border-bottom: 1px solid var(--quantum-border);
-            color: var(--quantum-text-secondary);
-            font-size: 0.9rem;
+            border-bottom: 1px solid var(--bg-border);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
@@ -596,8 +627,8 @@
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 1rem;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(42, 42, 90, 0.3);
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(42, 49, 73, 0.3);
         }
 
         .market-row:last-child {
@@ -608,37 +639,37 @@
         .market-row.down .change { color: var(--trading-red); }
 
         .chart-container {
-            height: 200px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
+            height: 180px;
+            background: var(--bg-primary);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid var(--bg-border);
         }
 
         .chart-placeholder {
             text-align: center;
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
         }
 
         .chart-placeholder i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--quantum-accent);
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--po-primary);
         }
 
-        /* ====== SIGNALS SECTION ====== */
+        /* ====== SIGNALS SECTION - POCKET OPTION STYLE ====== */
         .signals-section {
-            background: rgba(0, 0, 0, 0.2);
-            border-top: 1px solid var(--quantum-border);
-            border-bottom: 1px solid var(--quantum-border);
+            background: var(--bg-primary);
+            border-top: 1px solid var(--bg-border);
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
             gap: 1rem;
         }
@@ -647,17 +678,19 @@
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
+            color: var(--text-primary);
         }
 
         .section-subtitle {
-            color: var(--quantum-text-secondary);
-            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            font-size: 0.9rem;
         }
 
         .section-controls {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             align-items: center;
         }
 
@@ -668,27 +701,29 @@
         }
 
         .filter-btn {
-            background: var(--quantum-secondary);
-            color: var(--quantum-text);
-            border: 1px solid var(--quantum-border);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--bg-border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.8rem;
         }
 
         .filter-btn.active {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             border-color: transparent;
+            color: white;
         }
 
         .filter-btn:hover:not(.active) {
-            background: var(--quantum-card-bg);
-            border-color: var(--quantum-accent);
+            background: var(--bg-border);
+            border-color: var(--po-primary);
         }
 
         .signal-actions {
@@ -697,32 +732,34 @@
         }
 
         .action-btn {
-            background: var(--quantum-secondary);
-            color: var(--quantum-text);
-            border: 1px solid var(--quantum-border);
-            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--bg-border);
+            padding: 0.4rem 0.8rem;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.8rem;
         }
 
         .action-btn:hover {
-            border-color: var(--quantum-accent);
-            color: var(--quantum-accent);
+            border-color: var(--po-primary);
+            color: var(--po-primary);
         }
 
         .signal-stats-bar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 1rem;
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 10px;
-            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 8px;
+            padding: 1.2rem;
             margin-bottom: 2rem;
+            box-shadow: var(--shadow);
         }
 
         .signal-stat {
@@ -731,14 +768,14 @@
 
         .signal-stat .stat-label {
             display: block;
-            color: var(--quantum-text-secondary);
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
             margin-bottom: 0.5rem;
         }
 
         .signal-stat .stat-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.3rem;
             font-weight: 700;
         }
 
@@ -748,19 +785,20 @@
 
         .signals-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 3rem;
         }
 
         .signal-card {
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 15px;
-            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 12px;
+            padding: 1.2rem;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow);
         }
 
         .signal-card::before {
@@ -770,338 +808,232 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(90deg, var(--po-primary), var(--po-purple));
         }
 
         .signal-card:hover {
             transform: translateY(-5px);
-            border-color: var(--quantum-accent);
-            box-shadow: var(--quantum-glow);
+            border-color: var(--po-primary);
+            box-shadow: var(--glow);
         }
 
         .signal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .signal-asset {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--quantum-accent);
+            color: var(--po-primary);
         }
 
         .signal-action {
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .action-call {
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--quantum-success);
-            border: 1px solid var(--quantum-success);
+            background: rgba(56, 178, 172, 0.1);
+            color: var(--trading-green);
+            border: 1px solid var(--trading-green);
         }
 
         .action-put {
-            background: rgba(255, 45, 117, 0.1);
-            color: var(--quantum-danger);
-            border: 1px solid var(--quantum-danger);
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--trading-red);
+            border: 1px solid var(--trading-red);
         }
 
         .signal-meta {
             display: flex;
             gap: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: var(--quantum-text-secondary);
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
 
         .signal-details {
-            margin: 1.5rem 0;
+            margin: 1.2rem 0;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--quantum-border);
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--bg-border);
         }
 
         .detail-label {
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .detail-value {
             font-weight: 600;
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.95rem;
         }
 
         .confidence-stars {
-            color: var(--quantum-warning);
-            font-size: 1.2rem;
+            color: var(--trading-yellow);
+            font-size: 1.1rem;
         }
 
         .signal-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--quantum-border);
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--bg-border);
         }
 
         .like-btn {
             background: none;
             border: none;
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: color 0.3s;
         }
 
         .like-btn:hover {
-            color: var(--quantum-danger);
+            color: var(--po-danger);
         }
 
         .like-btn.liked {
-            color: var(--quantum-danger);
+            color: var(--po-danger);
         }
 
         .like-count {
-            font-size: 0.9rem;
-            color: var(--quantum-text-secondary);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
 
         .signal-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
             font-weight: 600;
         }
 
         .status-active {
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--quantum-success);
+            background: rgba(56, 178, 172, 0.1);
+            color: var(--trading-green);
         }
 
         .status-hit {
-            background: rgba(0, 212, 255, 0.1);
-            color: var(--quantum-accent);
+            background: rgba(66, 153, 225, 0.1);
+            color: var(--trading-blue);
         }
 
         .status-miss {
-            background: rgba(255, 45, 117, 0.1);
-            color: var(--quantum-danger);
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--trading-red);
         }
 
         .status-expired {
-            background: rgba(170, 170, 170, 0.1);
-            color: #aaa;
+            background: rgba(141, 141, 141, 0.1);
+            color: #8d8d8d;
         }
 
         .create-signal-btn {
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 2rem;
         }
 
         .btn-quantum {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-family: 'Orbitron', sans-serif;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
             transition: all 0.3s;
+            box-shadow: var(--shadow);
         }
 
         .btn-quantum:hover {
             transform: translateY(-2px);
-            box-shadow: var(--quantum-glow);
+            box-shadow: var(--glow);
         }
 
-        /* ====== TRADING TOOLS SECTION ====== */
-        .tools-section {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
+        /* ====== TOOLS & OTHER SECTIONS ====== */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
         .tool-card {
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 15px;
-            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 12px;
+            padding: 1.5rem;
             text-align: center;
             transition: all 0.3s;
+            box-shadow: var(--shadow);
         }
 
         .tool-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--quantum-accent);
+            transform: translateY(-3px);
+            border-color: var(--po-primary);
         }
 
         .tool-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 1.5rem;
-            border-radius: 15px;
-            background: linear-gradient(135deg, var(--quantum-accent), var(--quantum-purple));
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
+            color: white;
         }
 
         .tool-card h3 {
-            margin-bottom: 1rem;
-            color: var(--quantum-text);
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
         }
 
         .tool-card p {
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
             margin-bottom: 1.5rem;
+            font-size: 0.9rem;
         }
 
         .btn-tool {
             background: transparent;
-            color: var(--quantum-accent);
-            border: 2px solid var(--quantum-accent);
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
+            color: var(--po-primary);
+            border: 2px solid var(--po-primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .btn-tool:hover {
-            background: var(--quantum-accent);
-            color: var(--quantum-primary);
-        }
-
-        /* ====== MARKET ANALYSIS SECTION ====== */
-        .analysis-section {
-            background: rgba(0, 0, 0, 0.15);
-        }
-
-        .analysis-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-
-        @media (max-width: 1024px) {
-            .analysis-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .market-overview, .technical-analysis {
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 15px;
-            padding: 2rem;
-        }
-
-        .overview-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .overview-card {
-            padding: 1.5rem;
-            border-radius: 10px;
-        }
-
-        .overview-card.bullish {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-        }
-
-        .overview-card.bearish {
-            background: rgba(255, 45, 117, 0.1);
-            border: 1px solid rgba(255, 45, 117, 0.3);
-        }
-
-        .overview-card h4 {
-            margin-bottom: 1rem;
-            color: var(--quantum-text);
-        }
-
-        .overview-card ul {
-            list-style: none;
-        }
-
-        .overview-card li {
-            padding: 0.5rem 0;
-            color: var(--quantum-text-secondary);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .overview-card li:last-child {
-            border-bottom: none;
-        }
-
-        .analysis-chart {
-            height: 300px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            margin-top: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ====== ECONOMIC CALENDAR SECTION ====== */
-        .calendar-section {
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .calendar-table {
-            width: 100%;
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 2rem;
-        }
-
-        .calendar-table th {
-            background: var(--quantum-secondary);
-            padding: 1rem;
-            text-align: left;
-            color: var(--quantum-text);
-            font-weight: 600;
-        }
-
-        .calendar-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--quantum-border);
-            color: var(--quantum-text-secondary);
-        }
-
-        .calendar-table tr:hover {
-            background: var(--quantum-secondary);
+            background: var(--po-primary);
+            color: white;
         }
 
         /* ====== MODALS ====== */
@@ -1112,7 +1044,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 2000;
             backdrop-filter: blur(5px);
             align-items: center;
@@ -1120,21 +1052,22 @@
         }
 
         .modal-content {
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 12px;
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             position: relative;
             animation: modal-appear 0.3s ease-out;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         @keyframes modal-appear {
             from {
                 opacity: 0;
-                transform: translateY(-50px) scale(0.9);
+                transform: translateY(-30px) scale(0.95);
             }
             to {
                 opacity: 1;
@@ -1146,8 +1079,8 @@
             position: absolute;
             top: 1rem;
             right: 1rem;
-            font-size: 1.5rem;
-            color: var(--quantum-text-secondary);
+            font-size: 1.2rem;
+            color: var(--text-secondary);
             cursor: pointer;
             transition: color 0.3s;
             background: none;
@@ -1155,33 +1088,34 @@
         }
 
         .close-modal:hover {
-            color: var(--quantum-accent);
+            color: var(--po-primary);
         }
 
         .auth-tabs {
             display: flex;
-            border-bottom: 1px solid var(--quantum-border);
+            border-bottom: 1px solid var(--bg-border);
         }
 
         .auth-tab {
             flex: 1;
-            padding: 1rem;
+            padding: 0.8rem;
             background: none;
             border: none;
-            color: var(--quantum-text-secondary);
-            font-family: 'Orbitron', sans-serif;
+            color: var(--text-secondary);
+            font-family: 'Roboto', sans-serif;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.9rem;
         }
 
         .auth-tab.active {
-            color: var(--quantum-accent);
-            border-bottom: 2px solid var(--quantum-accent);
+            color: var(--po-primary);
+            border-bottom: 2px solid var(--po-primary);
         }
 
         .auth-form {
-            padding: 2rem;
+            padding: 1.5rem;
             display: none;
         }
 
@@ -1191,60 +1125,62 @@
 
         .auth-form h3 {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
+            color: var(--text-primary);
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: var(--quantum-text-secondary);
+            margin-bottom: 0.4rem;
+            color: var(--text-secondary);
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            background: var(--quantum-secondary);
-            border: 1px solid var(--quantum-border);
-            color: var(--quantum-text);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--bg-border);
+            color: var(--text-primary);
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--quantum-accent);
-            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+            border-color: var(--po-primary);
+            box-shadow: 0 0 0 2px rgba(0, 181, 216, 0.2);
         }
 
         .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
         }
 
         /* ====== NOTIFICATIONS PANEL ====== */
         .notification-panel {
             position: fixed;
-            top: 70px;
+            top: 60px;
             right: 20px;
-            width: 350px;
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 320px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             z-index: 1001;
             display: none;
             animation: slide-in 0.3s ease-out;
@@ -1262,8 +1198,8 @@
         }
 
         .notification-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--quantum-border);
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--bg-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -1274,120 +1210,126 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            color: var(--text-primary);
+            font-size: 1rem;
         }
 
         .notification-tabs {
             display: flex;
-            border-bottom: 1px solid var(--quantum-border);
-            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--bg-border);
+            padding: 0 1.2rem;
         }
 
         .notification-tab {
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 0.8rem;
             background: none;
             border: none;
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.3s;
             border-bottom: 2px solid transparent;
+            font-size: 0.8rem;
         }
 
         .notification-tab.active {
-            color: var(--quantum-accent);
-            border-bottom-color: var(--quantum-accent);
+            color: var(--po-primary);
+            border-bottom-color: var(--po-primary);
         }
 
         .notification-list {
-            max-height: 400px;
+            max-height: 350px;
             overflow-y: auto;
         }
 
         .notification-item {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--quantum-border);
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid var(--bg-border);
             transition: background 0.3s;
         }
 
         .notification-item:hover {
-            background: var(--quantum-secondary);
+            background: var(--bg-primary);
         }
 
         .notification-item.unread {
-            background: rgba(0, 212, 255, 0.05);
-            border-left: 3px solid var(--quantum-accent);
+            background: rgba(0, 181, 216, 0.05);
+            border-left: 3px solid var(--po-primary);
         }
 
         .notification-title {
             font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--quantum-text);
+            margin-bottom: 0.4rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
         }
 
         .notification-message {
-            color: var(--quantum-text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
         }
 
         .notification-time {
-            font-size: 0.8rem;
-            color: var(--quantum-text-secondary);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
         }
 
         /* ====== FOOTER ====== */
         .footer {
-            background: var(--quantum-secondary);
-            border-top: 1px solid var(--quantum-border);
-            padding: 4rem 0 2rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--bg-border);
+            padding: 3rem 0 1.5rem;
         }
 
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
         .footer-logo {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .footer-description {
-            margin-bottom: 1.5rem;
-            color: var(--quantum-text-secondary);
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .social-links {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .social-link {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--quantum-card-bg);
-            color: var(--quantum-text);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
             transition: all 0.3s;
+            border: 1px solid var(--bg-border);
         }
 
         .social-link:hover {
-            background: var(--quantum-accent);
-            color: var(--quantum-primary);
-            transform: translateY(-3px);
+            background: var(--po-primary);
+            color: white;
+            transform: translateY(-2px);
         }
 
         .footer-col h4 {
-            color: var(--quantum-accent);
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
+            color: var(--po-primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
         }
 
         .footer-links {
@@ -1395,68 +1337,72 @@
         }
 
         .footer-links li {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.6rem;
         }
 
         .footer-links a {
-            color: var(--quantum-text-secondary);
+            color: var(--text-secondary);
             text-decoration: none;
             transition: color 0.3s;
+            font-size: 0.9rem;
         }
 
         .footer-links a:hover {
-            color: var(--quantum-accent);
+            color: var(--po-primary);
         }
 
         .footer-contact li {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1rem;
-            color: var(--quantum-text-secondary);
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .footer-newsletter {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .newsletter-form {
             display: flex;
             gap: 0.5rem;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
 
         .newsletter-form input {
             flex: 1;
-            background: var(--quantum-card-bg);
-            border: 1px solid var(--quantum-border);
-            color: var(--quantum-text);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--bg-border);
+            color: var(--text-primary);
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
         }
 
         .btn-small {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
 
         .btn-small:hover {
             transform: translateY(-2px);
-            box-shadow: var(--quantum-glow);
+            box-shadow: var(--glow);
         }
 
         .footer-bottom {
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid var(--quantum-border);
-            color: var(--quantum-text-secondary);
-            font-size: 0.9rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-border);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
         }
 
         .footer-bottom p {
@@ -1475,15 +1421,15 @@
         .loading-signals {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 4rem;
+            padding: 3rem;
         }
 
         .quantum-loader {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 2rem;
-            border: 3px solid var(--quantum-border);
-            border-top-color: var(--quantum-accent);
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1.5rem;
+            border: 3px solid var(--bg-border);
+            border-top-color: var(--po-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -1496,7 +1442,7 @@
         @media (max-width: 1200px) {
             .hero-content {
                 grid-template-columns: 1fr;
-                gap: 3rem;
+                gap: 2rem;
             }
             
             .hero-stats {
@@ -1511,11 +1457,11 @@
                 top: 100%;
                 left: 0;
                 width: 100%;
-                background: var(--quantum-glass);
-                backdrop-filter: blur(10px);
+                background: var(--bg-card);
                 flex-direction: column;
                 padding: 1rem;
-                border-top: 1px solid var(--quantum-border);
+                border-top: 1px solid var(--bg-border);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             }
             
             .nav-links.active {
@@ -1531,22 +1477,23 @@
                 opacity: 1;
                 visibility: visible;
                 transform: none;
-                background: transparent;
-                border: none;
+                background: var(--bg-primary);
+                border: 1px solid var(--bg-border);
                 box-shadow: none;
                 padding-left: 1rem;
+                margin-top: 0.5rem;
             }
             
             .hero {
-                padding: 10rem 1rem 4rem;
+                padding: 7rem 1rem 3rem;
             }
             
             h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             
             h2 {
-                font-size: 2rem;
+                font-size: 1.5rem;
             }
             
             .signals-grid {
@@ -1575,11 +1522,11 @@
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
             
             .hero-stats {
@@ -1589,6 +1536,10 @@
             .signal-stats-bar {
                 grid-template-columns: 1fr;
             }
+            
+            .cta-options {
+                flex-direction: column;
+            }
         }
 
         /* ====== TOAST NOTIFICATIONS ====== */
@@ -1596,13 +1547,14 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 1rem 1.5rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 8px;
             color: white;
             font-weight: 500;
             z-index: 3000;
             animation: toast-slide 0.3s ease-out;
-            max-width: 350px;
+            max-width: 300px;
+            font-size: 0.9rem;
         }
 
         @keyframes toast-slide {
@@ -1617,19 +1569,194 @@
         }
 
         .toast.success {
-            background: linear-gradient(90deg, var(--quantum-success), #00cc77);
+            background: linear-gradient(135deg, var(--trading-green), #2a9d8f);
         }
 
         .toast.error {
-            background: linear-gradient(90deg, var(--quantum-danger), #ff0055);
+            background: linear-gradient(135deg, var(--trading-red), #e63946);
         }
 
         .toast.info {
-            background: linear-gradient(90deg, var(--quantum-accent), var(--quantum-purple));
+            background: linear-gradient(135deg, var(--po-primary), var(--po-purple));
+        }
+
+        /* ====== LIGHT THEME OVERRIDES ====== */
+        [data-theme="light"] {
+            --bg-primary: var(--po-light-bg);
+            --bg-card: var(--po-light-card);
+            --bg-border: var(--po-light-border);
+            --text-primary: var(--po-light-text);
+            --text-secondary: var(--po-light-text-secondary);
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --glow: 0 0 10px rgba(0, 181, 216, 0.2);
+        }
+
+        [data-theme="light"] .hero {
+            background: linear-gradient(135deg, rgba(0, 181, 216, 0.05) 0%, transparent 100%);
+        }
+
+        [data-theme="light"] .signal-card,
+        [data-theme="light"] .tool-card,
+        [data-theme="light"] .stat-card {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="light"] .chart-container {
+            background: var(--bg-card);
+        }
+
+        [data-theme="light"] .social-link {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+        }
+
+        [data-theme="light"] .market-row {
+            border-bottom-color: rgba(225, 229, 235, 0.5);
+        }
+
+        /* ====== ECONOMIC CALENDAR TABLE ====== */
+        .calendar-table {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .calendar-table th {
+            background: var(--bg-primary);
+            padding: 0.8rem 1rem;
+            text-align: left;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--bg-border);
+        }
+
+        .calendar-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--bg-border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .calendar-table tr:hover {
+            background: var(--bg-primary);
+        }
+
+        .calendar-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ====== ANALYSIS CONTAINER ====== */
+        .analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .analysis-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .market-overview, .technical-analysis {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+        }
+
+        .overview-card {
+            padding: 1.2rem;
+            border-radius: 8px;
+        }
+
+        .overview-card.bullish {
+            background: rgba(56, 178, 172, 0.1);
+            border: 1px solid rgba(56, 178, 172, 0.3);
+        }
+
+        .overview-card.bearish {
+            background: rgba(245, 101, 101, 0.1);
+            border: 1px solid rgba(245, 101, 101, 0.3);
+        }
+
+        .overview-card h4 {
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .overview-card ul {
+            list-style: none;
+        }
+
+        .overview-card li {
+            padding: 0.4rem 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .overview-card li:last-child {
+            border-bottom: none;
+        }
+
+        .analysis-chart {
+            height: 250px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-top: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--bg-border);
+        }
+
+        .analysis-insights {
+            margin-top: 1.2rem;
+        }
+
+        .analysis-insights h4 {
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .analysis-insights ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .analysis-insights li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .analysis-insights li:before {
+            content: "•";
+            color: var(--po-primary);
+            position: absolute;
+            left: 0;
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -1700,22 +1827,6 @@
                         <a href="#api-access" class="dropdown-item"><i class="fas fa-code"></i> API Access</a>
                     </div>
                 </div>
-                
-                <!-- Resources Dropdown -->
-                <div class="nav-dropdown">
-                    <a href="#resources" class="nav-link dropdown-toggle">
-                        <i class="fas fa-box-open"></i> Resources <i class="fas fa-chevron-down"></i>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a href="#trading-platforms" class="dropdown-item"><i class="fas fa-desktop"></i> Trading Platforms</a>
-                        <a href="#brokers" class="dropdown-item"><i class="fas fa-handshake"></i> Recommended Brokers</a>
-                        <a href="#tools" class="dropdown-item"><i class="fas fa-wrench"></i> Trading Tools</a>
-                        <a href="#apps" class="dropdown-item"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
-                        <a href="#api-docs" class="dropdown-item"><i class="fas fa-file-code"></i> API Documentation</a>
-                    </div>
-                </div>
-                
-                <a href="#support" class="nav-link"><i class="fas fa-headset"></i> Support</a>
             </div>
             
             <div class="nav-auth">
@@ -1723,12 +1834,20 @@
                 <div class="live-stats">
                     <div class="stat-item">
                         <span class="stat-label">BTC/USD</span>
-                        <span class="stat-value up">$45,283.12</span>
+                        <span class="stat-value up">$45,283</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">EUR/USD</span>
                         <span class="stat-value down">1.0845</span>
                     </div>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <div class="theme-toggle-container">
+                    <button class="theme-toggle-btn" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                        <i class="fas fa-sun"></i>
+                    </button>
                 </div>
                 
                 <button id="notificationBtn" class="btn-notification" style="display: none;">
@@ -1816,7 +1935,7 @@
             
             <div id="demoForm" class="auth-form">
                 <h3><i class="fas fa-play-circle"></i> Demo Account</h3>
-                <p style="color: var(--quantum-text-secondary); margin-bottom: 1.5rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
                     Try our platform with $10,000 virtual money. Practice trading with real-time signals without any risk.
                 </p>
                 <div class="form-group">
@@ -1956,8 +2075,8 @@
                                 </div>
                                 <div class="market-row up">
                                     <span class="symbol">BTC/USD</span>
-                                    <span class="bid">$45,283.12</span>
-                                    <span class="ask">$45,285.45</span>
+                                    <span class="bid">$45,283</span>
+                                    <span class="ask">$45,285</span>
                                     <span class="change">+2.34%</span>
                                 </div>
                                 <div class="market-row down">
@@ -1968,8 +2087,8 @@
                                 </div>
                                 <div class="market-row up">
                                     <span class="symbol">XAU/USD</span>
-                                    <span class="bid">$2,034.56</span>
-                                    <span class="ask">$2,035.12</span>
+                                    <span class="bid">$2,034</span>
+                                    <span class="ask">$2,035</span>
                                     <span class="change">+0.45%</span>
                                 </div>
                                 <div class="market-row up">
@@ -2044,233 +2163,7 @@
                 
                 <!-- Signals Grid -->
                 <div class="signals-grid" id="signalsGrid">
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">EUR/USD</div>
-                            <div class="signal-action action-call">CALL</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> 2 min ago</span>
-                            <span><i class="fas fa-user"></i> QuantumAI</span>
-                        </div>
-                        <div class="signal-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Expiry</span>
-                                <span class="detail-value">5 min</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Entry Price</span>
-                                <span class="detail-value">1.0845</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Target</span>
-                                <span class="detail-value">1.0860</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Confidence</span>
-                                <span class="detail-value confidence-stars">★★★★★</span>
-                            </div>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="like-btn">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">42</span>
-                            </button>
-                            <div class="signal-status status-active">
-                                ACTIVE
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">BTC/USD</div>
-                            <div class="signal-action action-put">PUT</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> 5 min ago</span>
-                            <span><i class="fas fa-user"></i> QuantumAI</span>
-                        </div>
-                        <div class="signal-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Expiry</span>
-                                <span class="detail-value">10 min</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Entry Price</span>
-                                <span class="detail-value">45283.12</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Target</span>
-                                <span class="detail-value">45100.00</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Confidence</span>
-                                <span class="detail-value confidence-stars">★★★★☆</span>
-                            </div>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="like-btn liked">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">28</span>
-                            </button>
-                            <div class="signal-status status-active">
-                                ACTIVE
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">XAU/USD</div>
-                            <div class="signal-action action-call">CALL</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> 15 min ago</span>
-                            <span><i class="fas fa-user"></i> QuantumAI</span>
-                        </div>
-                        <div class="signal-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Expiry</span>
-                                <span class="detail-value">15 min</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Entry Price</span>
-                                <span class="detail-value">2034.56</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Target</span>
-                                <span class="detail-value">2040.00</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Confidence</span>
-                                <span class="detail-value confidence-stars">★★★★★</span>
-                            </div>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="like-btn">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">35</span>
-                            </button>
-                            <div class="signal-status status-hit">
-                                HIT
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">GBP/USD</div>
-                            <div class="signal-action action-put">PUT</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> 8 min ago</span>
-                            <span><i class="fas fa-user"></i> QuantumAI</span>
-                        </div>
-                        <div class="signal-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Expiry</span>
-                                <span class="detail-value">8 min</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Entry Price</span>
-                                <span class="detail-value">1.2678</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Target</span>
-                                <span class="detail-value">1.2660</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Confidence</span>
-                                <span class="detail-value confidence-stars">★★★☆☆</span>
-                            </div>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="like-btn">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">19</span>
-                            </button>
-                            <div class="signal-status status-active">
-                                ACTIVE
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">USD/JPY</div>
-                            <div class="signal-action action-call">CALL</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> 3 min ago</span>
-                            <span><i class="fas fa-user"></i> QuantumAI</span>
-                        </div>
-                        <div class="signal-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Expiry</span>
-                                <span class="detail-value">7 min</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Entry Price</span>
-                                <span class="detail-value">148.25</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Target</span>
-                                <span class="detail-value">148.45</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Confidence</span>
-                                <span class="detail-value confidence-stars">★★★★☆</span>
-                            </div>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="like-btn liked">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">31</span>
-                            </button>
-                            <div class="signal-status status-active">
-                                ACTIVE
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">ETH/USD</div>
-                            <div class="signal-action action-call">CALL</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> 12 min ago</span>
-                            <span><i class="fas fa-user"></i> QuantumAI</span>
-                        </div>
-                        <div class="signal-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Expiry</span>
-                                <span class="detail-value">12 min</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Entry Price</span>
-                                <span class="detail-value">2415.75</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Target</span>
-                                <span class="detail-value">2430.00</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Confidence</span>
-                                <span class="detail-value confidence-stars">★★★★★</span>
-                            </div>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="like-btn">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">47</span>
-                            </button>
-                            <div class="signal-status status-hit">
-                                HIT
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Signals will be loaded here -->
                 </div>
                 
                 <!-- Create Signal Button (Admin Only) -->
@@ -2282,9 +2175,7 @@
             </div>
         </section>
 
-        <!-- ====== HIDDEN SECTIONS (Load when clicked from dropdown) ====== -->
-        
-        <!-- Trading Tools Section -->
+        <!-- Hidden Sections -->
         <section id="trading-tools" class="signals-section hidden-section">
             <div class="container">
                 <div class="section-header">
@@ -2293,64 +2184,11 @@
                 </div>
                 
                 <div class="tools-grid">
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                        <h3>Profit Calculator</h3>
-                        <p>Calculate potential profits, risk/reward ratios, and position sizing for any trade setup</p>
-                        <button class="btn-tool">Open Calculator</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-chart-pie"></i>
-                        </div>
-                        <h3>Portfolio Analyzer</h3>
-                        <p>Analyze your trading portfolio performance, risk distribution, and drawdown analysis</p>
-                        <button class="btn-tool">Analyze Portfolio</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-balance-scale"></i>
-                        </div>
-                        <h3>Risk Management</h3>
-                        <p>Advanced risk calculation, position sizing, and stop-loss optimization tools</p>
-                        <button class="btn-tool">Manage Risk</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <h3>Trading Bots</h3>
-                        <p>Automate your trading strategies with our customizable bot platform</p>
-                        <button class="btn-tool">Explore Bots</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-history"></i>
-                        </div>
-                        <h3>Backtesting Suite</h3>
-                        <p>Test your trading strategies against historical market data</p>
-                        <button class="btn-tool">Start Backtesting</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-bell"></i>
-                        </div>
-                        <h3>Alert Manager</h3>
-                        <p>Set custom price alerts and technical indicator notifications</p>
-                        <button class="btn-tool">Set Alerts</button>
-                    </div>
+                    <!-- Tools will be loaded here -->
                 </div>
             </div>
         </section>
 
-        <!-- Market Analysis Section -->
         <section id="market-analysis" class="signals-section hidden-section">
             <div class="container">
                 <div class="section-header">
@@ -2359,52 +2197,11 @@
                 </div>
                 
                 <div class="analysis-container">
-                    <div class="market-overview">
-                        <h3>Market Overview</h3>
-                        <div class="overview-grid">
-                            <div class="overview-card bullish">
-                                <h4>Bullish Markets</h4>
-                                <ul>
-                                    <li>NASDAQ +1.2%</li>
-                                    <li>Gold +0.8%</li>
-                                    <li>BTC +2.3%</li>
-                                    <li>Silver +1.1%</li>
-                                    <li>DAX +0.7%</li>
-                                </ul>
-                            </div>
-                            <div class="overview-card bearish">
-                                <h4>Bearish Markets</h4>
-                                <ul>
-                                    <li>USD/JPY -0.4%</li>
-                                    <li>Oil -1.2%</li>
-                                    <li>FTSE -0.3%</li>
-                                    <li>AUD/USD -0.2%</li>
-                                    <li>Natural Gas -2.1%</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="technical-analysis">
-                        <h3>Technical Analysis</h3>
-                        <div class="analysis-chart">
-                            <canvas id="marketChart"></canvas>
-                        </div>
-                        <div class="analysis-insights">
-                            <h4>Key Insights</h4>
-                            <ul>
-                                <li>EUR/USD breaking resistance at 1.0850 - Bullish momentum confirmed</li>
-                                <li>BTC facing resistance at $46,000 - Watch for breakout</li>
-                                <li>Gold shows strength above $2,030 - Target $2,050</li>
-                                <li>USD/JPY in consolidation range 147.50-148.50</li>
-                            </ul>
-                        </div>
-                    </div>
+                    <!-- Analysis content will be loaded here -->
                 </div>
             </div>
         </section>
 
-        <!-- Economic Calendar Section -->
         <section id="economic-calendar" class="signals-section hidden-section">
             <div class="container">
                 <div class="section-header">
@@ -2413,284 +2210,12 @@
                 </div>
                 
                 <table class="calendar-table">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Event</th>
-                            <th>Currency</th>
-                            <th>Impact</th>
-                            <th>Forecast</th>
-                            <th>Previous</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>14:30 GMT</td>
-                            <td>US Non-Farm Payrolls</td>
-                            <td>USD</td>
-                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
-                            <td>180K</td>
-                            <td>199K</td>
-                        </tr>
-                        <tr>
-                            <td>15:00 GMT</td>
-                            <td>US Unemployment Rate</td>
-                            <td>USD</td>
-                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
-                            <td>3.8%</td>
-                            <td>3.7%</td>
-                        </tr>
-                        <tr>
-                            <td>13:30 GMT</td>
-                            <td>Average Hourly Earnings</td>
-                            <td>USD</td>
-                            <td><span style="color: var(--trading-yellow); font-weight: bold;">MEDIUM</span></td>
-                            <td>0.3%</td>
-                            <td>0.4%</td>
-                        </tr>
-                        <tr>
-                            <td>12:00 GMT</td>
-                            <td>BoE Interest Rate Decision</td>
-                            <td>GBP</td>
-                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
-                            <td>5.25%</td>
-                            <td>5.25%</td>
-                        </tr>
-                        <tr>
-                            <td>11:45 GMT</td>
-                            <td>ECB Press Conference</td>
-                            <td>EUR</td>
-                            <td><span style="color: var(--trading-red); font-weight: bold;">HIGH</span></td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>10:00 GMT</td>
-                            <td>German CPI</td>
-                            <td>EUR</td>
-                            <td><span style="color: var(--trading-yellow); font-weight: bold;">MEDIUM</span></td>
-                            <td>3.2%</td>
-                            <td>3.7%</td>
-                        </tr>
-                    </tbody>
+                    <!-- Calendar content will be loaded here -->
                 </table>
             </div>
         </section>
 
-        <!-- Trading Academy Section -->
-        <section id="trading-academy" class="signals-section hidden-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2><i class="fas fa-university"></i> QUANTUM TRADING ACADEMY</h2>
-                    <p class="section-subtitle">Master trading with our comprehensive education platform</p>
-                </div>
-                
-                <div class="tools-grid">
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <h3>Beginner Course</h3>
-                        <p>Learn the basics of trading, terminology, and risk management</p>
-                        <button class="btn-tool">Start Learning</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3>Technical Analysis</h3>
-                        <p>Master chart patterns, indicators, and price action trading</p>
-                        <button class="btn-tool">Explore Course</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h3>Trading Psychology</h3>
-                        <p>Develop the mindset of successful traders</p>
-                        <button class="btn-tool">Learn Psychology</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-chess"></i>
-                        </div>
-                        <h3>Advanced Strategies</h3>
-                        <p>Institutional-grade trading strategies and techniques</p>
-                        <button class="btn-tool">Study Strategies</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Webinars Section -->
-        <section id="webinars" class="signals-section hidden-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2><i class="fas fa-video"></i> LIVE TRADING WEBINARS</h2>
-                    <p class="section-subtitle">Learn from professional traders in real-time</p>
-                </div>
-                
-                <div class="signals-grid">
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">Live Market Analysis</div>
-                            <div class="signal-action action-call">LIVE</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> Today, 15:00 GMT</span>
-                            <span><i class="fas fa-user"></i> John Trader (Pro)</span>
-                        </div>
-                        <div class="signal-details">
-                            <p>Real-time market analysis and trade setups for the coming week. Learn how to identify high-probability trading opportunities.</p>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="btn-quantum">
-                                <i class="fas fa-play"></i> Join Webinar
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">Risk Management Masterclass</div>
-                            <div class="signal-action action-put">UPCOMING</div>
-                        </div>
-                        <div class="signal-meta">
-                            <span><i class="far fa-clock"></i> Tomorrow, 14:00 GMT</span>
-                            <span><i class="fas fa-user"></i> Sarah Analyst</span>
-                        </div>
-                        <div class="signal-details">
-                            <p>Learn advanced risk management techniques to protect your capital and maximize profits.</p>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="btn-quantum">
-                                <i class="fas fa-calendar-plus"></i> Register
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIP Pricing Section -->
-        <section id="pricing" class="signals-section hidden-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2><i class="fas fa-crown"></i> VIP MEMBERSHIP PLANS</h2>
-                    <p class="section-subtitle">Choose your quantum trading tier</p>
-                </div>
-                
-                <div class="tools-grid">
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h3>FREE</h3>
-                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--quantum-neon); margin: 1rem 0;">$0<span style="font-size: 1rem; color: var(--quantum-text-secondary);">/month</span></div>
-                        <ul style="text-align: left; margin: 1.5rem 0; padding-left: 1.5rem;">
-                            <li>3 Daily Signals</li>
-                            <li>Basic Performance Stats</li>
-                            <li>Community Access</li>
-                            <li><del>Real-time Alerts</del></li>
-                            <li><del>VIP Signals</del></li>
-                        </ul>
-                        <button class="btn-tool">Current Plan</button>
-                    </div>
-                    
-                    <div class="tool-card" style="border: 2px solid var(--quantum-accent); transform: scale(1.05);">
-                        <div class="tool-icon" style="background: linear-gradient(135deg, var(--quantum-accent), var(--trading-purple));">
-                            <i class="fas fa-crown"></i>
-                        </div>
-                        <h3>VIP</h3>
-                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--quantum-neon); margin: 1rem 0;">$97<span style="font-size: 1rem; color: var(--quantum-text-secondary);">/month</span></div>
-                        <ul style="text-align: left; margin: 1.5rem 0; padding-left: 1.5rem;">
-                            <li>All Daily Signals</li>
-                            <li>Real-time Mobile Alerts</li>
-                            <li>VIP Only Signals</li>
-                            <li>Advanced Analytics</li>
-                            <li>Priority Support</li>
-                        </ul>
-                        <button class="btn-quantum">UPGRADE TO VIP</button>
-                    </div>
-                    
-                    <div class="tool-card">
-                        <div class="tool-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <h3>PRO</h3>
-                        <div style="font-size: 2.5rem; font-weight: bold; color: var(--quantum-neon); margin: 1rem 0;">$297<span style="font-size: 1rem; color: var(--quantum-text-secondary);">/month</span></div>
-                        <ul style="text-align: left; margin: 1.5rem 0; padding-left: 1.5rem;">
-                            <li>Everything in VIP</li>
-                            <li>1-on-1 Coaching</li>
-                            <li>Custom Signal Filters</li>
-                            <li>API Access</li>
-                            <li>Dedicated Account Manager</li>
-                        </ul>
-                        <button class="btn-tool">GO PRO</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Community Section -->
-        <section id="community" class="signals-section hidden-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2><i class="fas fa-users"></i> TRADING COMMUNITY</h2>
-                    <p class="section-subtitle">Connect with thousands of successful traders</p>
-                </div>
-                
-                <div class="signals-grid">
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">Trade Ideas</div>
-                            <div class="signal-action action-call">COMMUNITY</div>
-                        </div>
-                        <div class="signal-details">
-                            <p>Share your trade ideas and get feedback from experienced traders. Discuss setups and strategies.</p>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="btn-quantum">
-                                <i class="fas fa-lightbulb"></i> Browse Ideas
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">Leaderboard</div>
-                            <div class="signal-action action-put">RANKING</div>
-                        </div>
-                        <div class="signal-details">
-                            <p>See the top performing traders in our community. Learn from their strategies and performance.</p>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="btn-quantum">
-                                <i class="fas fa-trophy"></i> View Rankings
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="signal-card">
-                        <div class="signal-header">
-                            <div class="signal-asset">Discussion Forum</div>
-                            <div class="signal-action action-call">FORUM</div>
-                        </div>
-                        <div class="signal-details">
-                            <p>Join discussions about trading strategies, market analysis, and trading psychology.</p>
-                        </div>
-                        <div class="signal-footer">
-                            <button class="btn-quantum">
-                                <i class="fas fa-comments"></i> Join Discussion
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- Add more hidden sections as needed -->
 
     </main>
 
@@ -2816,7 +2341,6 @@
 
     <script>
         // ====== CONFIGURATION ======
-        // Replace these with your actual Supabase credentials
         const SUPABASE_URL = 'https://your-project.supabase.co';
         const SUPABASE_ANON_KEY = 'your-anon-key-here';
         
@@ -2826,6 +2350,7 @@
         let isAdmin = false;
         let currentSection = 'hero';
         let marketChart = null;
+        let currentTheme = 'dark';
 
         // ====== INITIALIZATION ======
         document.addEventListener('DOMContentLoaded', async () => {
@@ -2847,23 +2372,48 @@
                 // Setup event listeners
                 setupEventListeners();
                 
-                // Initialize market chart
-                initializeMarketChart();
+                // Load initial data
+                loadInitialData();
                 
-                // Setup auth state change listener
-                supabase.auth.onAuthStateChange((event, session) => {
-                    if (event === 'SIGNED_IN' && session) {
-                        handleUserLogin(session.user);
-                    } else if (event === 'SIGNED_OUT') {
-                        handleUserLogout();
-                    }
-                });
+                // Initialize theme from localStorage
+                initializeTheme();
 
             } catch (error) {
                 console.error('Initialization error:', error);
                 showToast('Error initializing application', 'error');
             }
         });
+
+        // ====== THEME MANAGEMENT ======
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('quantum-theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else {
+                // Default to dark mode
+                setTheme('dark');
+            }
+        }
+
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('quantum-theme', theme);
+            
+            // Update theme toggle button
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.innerHTML = theme === 'dark' 
+                    ? '<i class="fas fa-moon"></i>' 
+                    : '<i class="fas fa-sun"></i>';
+            }
+        }
+
+        function toggleTheme() {
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+            showToast(`Switched to ${newTheme} mode`, 'info');
+        }
 
         // ====== AUTHENTICATION ======
         async function handleUserLogin(user) {
@@ -2991,6 +2541,9 @@
                     navigateToSection(targetId);
                 });
             });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
             // Auth buttons
             document.getElementById('loginBtn').addEventListener('click', async () => {
@@ -3146,23 +2699,6 @@
                     await toggleLike(button);
                 }
             });
-
-            // Tool buttons
-            document.addEventListener('click', (e) => {
-                if (e.target.closest('.btn-tool') || e.target.closest('.btn-quantum')) {
-                    const button = e.target.closest('.btn-tool') || e.target.closest('.btn-quantum');
-                    const parentCard = button.closest('.tool-card') || button.closest('.signal-card');
-                    const title = parentCard?.querySelector('h3')?.textContent || 'Feature';
-                    
-                    if (button.textContent.includes('UPGRADE')) {
-                        showToast(`Opening ${title} upgrade page...`, 'info');
-                    } else if (button.textContent.includes('Current Plan')) {
-                        showToast('You are currently on the Free plan', 'info');
-                    } else {
-                        showToast(`Opening ${title}...`, 'info');
-                    }
-                }
-            });
         }
 
         function navigateToSection(sectionId) {
@@ -3182,7 +2718,7 @@
                 loadSectionData(sectionId);
                 
                 // Scroll to top of section
-                window.scrollTo({ top: targetSection.offsetTop - 80, behavior: 'smooth' });
+                window.scrollTo({ top: targetSection.offsetTop - 70, behavior: 'smooth' });
             }
         }
 
@@ -3208,13 +2744,169 @@
             document.getElementById('demoForm').reset();
         }
 
+        // ====== INITIAL DATA LOADING ======
+        async function loadInitialData() {
+            await loadSignals();
+            loadTradingTools();
+            loadMarketAnalysis();
+            loadEconomicCalendar();
+        }
+
         // ====== SIGNALS MANAGEMENT ======
+        async function loadSignals() {
+            const signalsGrid = document.getElementById('signalsGrid');
+            if (!signalsGrid) return;
+            
+            const signals = [
+                {
+                    id: 1,
+                    asset_name: 'EUR/USD',
+                    action: 'CALL',
+                    created_at: new Date(Date.now() - 2 * 60000).toISOString(),
+                    expiry_time: 5,
+                    entry_price: 1.0845,
+                    target_price: 1.0860,
+                    confidence_level: 5,
+                    status: 'active',
+                    likes: 42
+                },
+                {
+                    id: 2,
+                    asset_name: 'BTC/USD',
+                    action: 'PUT',
+                    created_at: new Date(Date.now() - 5 * 60000).toISOString(),
+                    expiry_time: 10,
+                    entry_price: 45283.12,
+                    target_price: 45100.00,
+                    confidence_level: 4,
+                    status: 'active',
+                    likes: 28
+                },
+                {
+                    id: 3,
+                    asset_name: 'XAU/USD',
+                    action: 'CALL',
+                    created_at: new Date(Date.now() - 15 * 60000).toISOString(),
+                    expiry_time: 15,
+                    entry_price: 2034.56,
+                    target_price: 2040.00,
+                    confidence_level: 5,
+                    status: 'hit',
+                    likes: 35
+                },
+                {
+                    id: 4,
+                    asset_name: 'GBP/USD',
+                    action: 'PUT',
+                    created_at: new Date(Date.now() - 8 * 60000).toISOString(),
+                    expiry_time: 8,
+                    entry_price: 1.2678,
+                    target_price: 1.2660,
+                    confidence_level: 3,
+                    status: 'active',
+                    likes: 19
+                },
+                {
+                    id: 5,
+                    asset_name: 'USD/JPY',
+                    action: 'CALL',
+                    created_at: new Date(Date.now() - 3 * 60000).toISOString(),
+                    expiry_time: 7,
+                    entry_price: 148.25,
+                    target_price: 148.45,
+                    confidence_level: 4,
+                    status: 'active',
+                    likes: 31
+                },
+                {
+                    id: 6,
+                    asset_name: 'ETH/USD',
+                    action: 'CALL',
+                    created_at: new Date(Date.now() - 12 * 60000).toISOString(),
+                    expiry_time: 12,
+                    entry_price: 2415.75,
+                    target_price: 2430.00,
+                    confidence_level: 5,
+                    status: 'hit',
+                    likes: 47
+                }
+            ];
+            
+            displaySignals(signals);
+        }
+
+        function displaySignals(signals) {
+            const grid = document.getElementById('signalsGrid');
+            if (!grid) return;
+            
+            if (!signals || signals.length === 0) {
+                grid.innerHTML = `
+                    <div class="loading-signals">
+                        <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--po-primary); margin-bottom: 1rem;"></i>
+                        <h3>No signals found</h3>
+                        <p>Check back soon for new trading opportunities</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = signals.map(signal => createSignalCard(signal)).join('');
+        }
+
+        function createSignalCard(signal) {
+            const confidenceStars = '★'.repeat(signal.confidence_level) + '☆'.repeat(5 - signal.confidence_level);
+            
+            return `
+                <div class="signal-card" data-signal-id="${signal.id}">
+                    <div class="signal-header">
+                        <div class="signal-asset">${signal.asset_name}</div>
+                        <div class="signal-action ${signal.action === 'CALL' ? 'action-call' : 'action-put'}">
+                            ${signal.action}
+                        </div>
+                    </div>
+                    <div class="signal-meta">
+                        <span><i class="far fa-clock"></i> ${getTimeAgo(signal.created_at)}</span>
+                        <span><i class="fas fa-user"></i> QuantumAI</span>
+                    </div>
+                    <div class="signal-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Expiry</span>
+                            <span class="detail-value">${signal.expiry_time} min</span>
+                        </div>
+                        ${signal.entry_price ? `
+                        <div class="detail-row">
+                            <span class="detail-label">Entry Price</span>
+                            <span class="detail-value">${parseFloat(signal.entry_price).toFixed(signal.asset_name.includes('/') ? 4 : 2)}</span>
+                        </div>
+                        ` : ''}
+                        ${signal.target_price ? `
+                        <div class="detail-row">
+                            <span class="detail-label">Target</span>
+                            <span class="detail-value">${parseFloat(signal.target_price).toFixed(signal.asset_name.includes('/') ? 4 : 2)}</span>
+                        </div>
+                        ` : ''}
+                        <div class="detail-row">
+                            <span class="detail-label">Confidence</span>
+                            <span class="detail-value confidence-stars">${confidenceStars}</span>
+                        </div>
+                    </div>
+                    <div class="signal-footer">
+                        <button class="like-btn">
+                            <i class="fas fa-heart"></i>
+                            <span class="like-count">${signal.likes}</span>
+                        </button>
+                        <div class="signal-status status-${signal.status}">
+                            ${signal.status.toUpperCase()}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         async function refreshSignals() {
             showToast('Refreshing signals...', 'info');
-            // In a real app, this would fetch new signals from the server
-            setTimeout(() => {
-                showToast('Signals refreshed successfully!', 'success');
-            }, 1000);
+            await loadSignals();
+            showToast('Signals refreshed successfully!', 'success');
         }
 
         function filterSignals(filter) {
@@ -3278,6 +2970,216 @@
             
             document.getElementById('signalModal').style.display = 'none';
             document.getElementById('signalForm').reset();
+            
+            // Refresh signals
+            await loadSignals();
+        }
+
+        // ====== TRADING TOOLS ======
+        function loadTradingTools() {
+            const toolsGrid = document.querySelector('#trading-tools .tools-grid');
+            if (!toolsGrid) return;
+            
+            const tools = [
+                {
+                    icon: 'fa-calculator',
+                    title: 'Profit Calculator',
+                    description: 'Calculate potential profits, risk/reward ratios, and position sizing for any trade setup'
+                },
+                {
+                    icon: 'fa-chart-pie',
+                    title: 'Portfolio Analyzer',
+                    description: 'Analyze your trading portfolio performance, risk distribution, and drawdown analysis'
+                },
+                {
+                    icon: 'fa-balance-scale',
+                    title: 'Risk Management',
+                    description: 'Advanced risk calculation, position sizing, and stop-loss optimization tools'
+                },
+                {
+                    icon: 'fa-robot',
+                    title: 'Trading Bots',
+                    description: 'Automate your trading strategies with our customizable bot platform'
+                },
+                {
+                    icon: 'fa-history',
+                    title: 'Backtesting Suite',
+                    description: 'Test your trading strategies against historical market data'
+                },
+                {
+                    icon: 'fa-bell',
+                    title: 'Alert Manager',
+                    description: 'Set custom price alerts and technical indicator notifications'
+                }
+            ];
+            
+            toolsGrid.innerHTML = tools.map(tool => `
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas ${tool.icon}"></i>
+                    </div>
+                    <h3>${tool.title}</h3>
+                    <p>${tool.description}</p>
+                    <button class="btn-tool">Open Tool</button>
+                </div>
+            `).join('');
+        }
+
+        // ====== MARKET ANALYSIS ======
+        function loadMarketAnalysis() {
+            const analysisContainer = document.querySelector('#market-analysis .analysis-container');
+            if (!analysisContainer) return;
+            
+            analysisContainer.innerHTML = `
+                <div class="market-overview">
+                    <h3>Market Overview</h3>
+                    <div class="overview-grid">
+                        <div class="overview-card bullish">
+                            <h4>Bullish Markets</h4>
+                            <ul>
+                                <li>NASDAQ +1.2%</li>
+                                <li>Gold +0.8%</li>
+                                <li>BTC +2.3%</li>
+                                <li>Silver +1.1%</li>
+                                <li>DAX +0.7%</li>
+                            </ul>
+                        </div>
+                        <div class="overview-card bearish">
+                            <h4>Bearish Markets</h4>
+                            <ul>
+                                <li>USD/JPY -0.4%</li>
+                                <li>Oil -1.2%</li>
+                                <li>FTSE -0.3%</li>
+                                <li>AUD/USD -0.2%</li>
+                                <li>Natural Gas -2.1%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="technical-analysis">
+                    <h3>Technical Analysis</h3>
+                    <div class="analysis-chart">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                    <div class="analysis-insights">
+                        <h4>Key Insights</h4>
+                        <ul>
+                            <li>EUR/USD breaking resistance at 1.0850 - Bullish momentum confirmed</li>
+                            <li>BTC facing resistance at $46,000 - Watch for breakout</li>
+                            <li>Gold shows strength above $2,030 - Target $2,050</li>
+                            <li>USD/JPY in consolidation range 147.50-148.50</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Initialize market chart
+            setTimeout(() => {
+                const ctx = document.getElementById('marketChart');
+                if (ctx) {
+                    initializeMarketChart(ctx);
+                }
+            }, 100);
+        }
+
+        function initializeMarketChart(canvas) {
+            const ctx = canvas.getContext('2d');
+            marketChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'EUR/USD',
+                        data: [1.0750, 1.0780, 1.0800, 1.0820, 1.0845, 1.0830, 1.0850],
+                        borderColor: getComputedStyle(document.body).getPropertyValue('--po-primary'),
+                        backgroundColor: `${getComputedStyle(document.body).getPropertyValue('--po-primary')}20`,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'BTC/USD',
+                        data: [42000, 42500, 43500, 44000, 45283, 44800, 45000],
+                        borderColor: getComputedStyle(document.body).getPropertyValue('--trading-green'),
+                        backgroundColor: `${getComputedStyle(document.body).getPropertyValue('--trading-green')}20`,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-primary'),
+                                font: {
+                                    family: 'Roboto'
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: getComputedStyle(document.body).getPropertyValue('--bg-border')
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: getComputedStyle(document.body).getPropertyValue('--bg-border')
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ====== ECONOMIC CALENDAR ======
+        function loadEconomicCalendar() {
+            const calendarTable = document.querySelector('#economic-calendar .calendar-table');
+            if (!calendarTable) return;
+            
+            const events = [
+                { time: '14:30 GMT', event: 'US Non-Farm Payrolls', currency: 'USD', impact: 'HIGH', forecast: '180K', previous: '199K' },
+                { time: '15:00 GMT', event: 'US Unemployment Rate', currency: 'USD', impact: 'HIGH', forecast: '3.8%', previous: '3.7%' },
+                { time: '13:30 GMT', event: 'Average Hourly Earnings', currency: 'USD', impact: 'MEDIUM', forecast: '0.3%', previous: '0.4%' },
+                { time: '12:00 GMT', event: 'BoE Interest Rate Decision', currency: 'GBP', impact: 'HIGH', forecast: '5.25%', previous: '5.25%' },
+                { time: '11:45 GMT', event: 'ECB Press Conference', currency: 'EUR', impact: 'HIGH', forecast: '-', previous: '-' },
+                { time: '10:00 GMT', event: 'German CPI', currency: 'EUR', impact: 'MEDIUM', forecast: '3.2%', previous: '3.7%' }
+            ];
+            
+            calendarTable.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Event</th>
+                        <th>Currency</th>
+                        <th>Impact</th>
+                        <th>Forecast</th>
+                        <th>Previous</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${events.map(event => `
+                        <tr>
+                            <td>${event.time}</td>
+                            <td>${event.event}</td>
+                            <td>${event.currency}</td>
+                            <td><span style="color: ${event.impact === 'HIGH' ? 'var(--trading-red)' : 'var(--trading-yellow)'}; font-weight: bold;">${event.impact}</span></td>
+                            <td>${event.forecast}</td>
+                            <td>${event.previous}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
         }
 
         // ====== NOTIFICATIONS ======
@@ -3298,81 +3200,36 @@
             });
         }
 
-        // ====== MARKET CHART ======
-        function initializeMarketChart() {
-            const ctx = document.getElementById('marketChart');
-            if (!ctx) return;
-            
-            marketChart = new Chart(ctx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'EUR/USD',
-                        data: [1.0750, 1.0780, 1.0800, 1.0820, 1.0845, 1.0830, 1.0850],
-                        borderColor: 'rgb(0, 212, 255)',
-                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }, {
-                        label: 'BTC/USD',
-                        data: [42000, 42500, 43500, 44000, 45283, 44800, 45000],
-                        borderColor: 'rgb(0, 255, 136)',
-                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'rgb(176, 176, 208)',
-                                font: {
-                                    family: 'Inter'
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(42, 42, 90, 0.5)'
-                            },
-                            ticks: {
-                                color: 'rgb(176, 176, 208)'
-                            }
-                        },
-                        y: {
-                            grid: {
-                                color: 'rgba(42, 42, 90, 0.5)'
-                            },
-                            ticks: {
-                                color: 'rgb(176, 176, 208)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
         // ====== SECTION DATA LOADING ======
         function loadSectionData(sectionId) {
             switch(sectionId) {
                 case 'market-analysis':
-                    if (marketChart) {
-                        marketChart.update();
-                    }
+                    loadMarketAnalysis();
+                    break;
+                case 'economic-calendar':
+                    loadEconomicCalendar();
                     break;
                 // Add more cases for other sections as needed
             }
         }
 
         // ====== UTILITY FUNCTIONS ======
+        function getTimeAgo(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+
         function showToast(message, type = 'info') {
             // Remove existing toasts
             const existingToasts = document.querySelectorAll('.toast');
@@ -3389,69 +3246,6 @@
                 toast.remove();
             }, 5000);
         }
-
-        // ====== SUPABASE SCHEMA SETUP INSTRUCTIONS ======
-        /*
-        To set up the Supabase backend, run these SQL commands in your Supabase SQL Editor:
-        
-        1. Create profiles table:
-        CREATE TABLE profiles (
-          id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
-          username TEXT UNIQUE,
-          full_name TEXT,
-          avatar_url TEXT,
-          is_admin BOOLEAN DEFAULT FALSE,
-          subscription_tier TEXT DEFAULT 'free',
-          subscription_expiry TIMESTAMPTZ,
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          updated_at TIMESTAMPTZ DEFAULT NOW()
-        );
-
-        2. Create signals table:
-        CREATE TABLE signals (
-          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-          asset_name TEXT NOT NULL,
-          action TEXT NOT NULL CHECK (action IN ('CALL', 'PUT')),
-          expiry_time INTEGER NOT NULL,
-          entry_price DECIMAL(10,5),
-          target_price DECIMAL(10,5),
-          stop_loss DECIMAL(10,5),
-          confidence_level INTEGER CHECK (confidence_level >= 1 AND confidence_level <= 5),
-          status TEXT DEFAULT 'active' CHECK (status IN ('active', 'hit', 'miss', 'expired')),
-          created_by UUID REFERENCES profiles(id),
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          updated_at TIMESTAMPTZ DEFAULT NOW()
-        );
-
-        3. Create signal_likes table:
-        CREATE TABLE signal_likes (
-          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-          signal_id UUID REFERENCES signals(id) ON DELETE CASCADE,
-          user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          UNIQUE(signal_id, user_id)
-        );
-
-        4. Create notifications table:
-        CREATE TABLE notifications (
-          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-          user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-          title TEXT NOT NULL,
-          message TEXT NOT NULL,
-          type TEXT DEFAULT 'info',
-          read BOOLEAN DEFAULT FALSE,
-          related_signal_id UUID REFERENCES signals(id),
-          created_at TIMESTAMPTZ DEFAULT NOW()
-        );
-
-        5. Enable Row Level Security (RLS):
-        ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-        ALTER TABLE signals ENABLE ROW LEVEL SECURITY;
-        ALTER TABLE signal_likes ENABLE ROW LEVEL SECURITY;
-        ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
-
-        6. Create RLS policies for each table.
-        */
     </script>
 </body>
 </html>
